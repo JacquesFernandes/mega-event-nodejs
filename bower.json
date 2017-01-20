@@ -1,0 +1,25 @@
+{
+  "name": "mega-event",
+  "description": "Mega Event",
+  "main": "app.js",
+  "authors": [
+    "mit17k"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "multiplayer",
+    "space",
+    "html5",
+    "physics",
+    "teknack"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
