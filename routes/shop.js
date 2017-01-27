@@ -28,27 +28,27 @@ function getTiers()
   tiers = {
     "t0":{
       "HP": 100,
-      "light":{"mov":"10", "dmg": "10", "fire_rate": "10"},
-      "heavy":{"mov":"10", "dmg": "20", "fire_rate": "5"},
-      "sniper":{"mov":"10", "dmg": "30", "fire_rate": "1"}
+      "light":{"mov":"10", "dmg": "10", "fire_rate": "10", "bonus_hp": "0"},
+      "heavy":{"mov":"10", "dmg": "20", "fire_rate": "5", "bonus_hp": "20"},
+      "sniper":{"mov":"10", "dmg": "30", "fire_rate": "1", "bonus_hp": "10"}
     },
     "t1":{
       "HP": 120,
-      "light":{"mov":"30", "dmg": "10", "fire_rate": "20"},
-      "heavy":{"mov":"10", "dmg": "30", "fire_rate": "15"},
-      "sniper":{"mov":"20", "dmg": "50", "fire_rate": "1"}
+      "light":{"mov":"30", "dmg": "10", "fire_rate": "20", "bonus_hp": "0"},
+      "heavy":{"mov":"10", "dmg": "30", "fire_rate": "15", "bonus_hp": "20"},
+      "sniper":{"mov":"20", "dmg": "50", "fire_rate": "1", "bonus_hp": "10"}
     },
     "t2":{
       "HP": 130,
-      "light":{"mov":"50", "dmg": "10", "fire_rate": "30"},
-      "heavy":{"mov":"10", "dmg": "40", "fire_rate": "25"},
-      "sniper":{"mov":"30", "dmg": "70", "fire_rate": "1"}
+      "light":{"mov":"50", "dmg": "10", "fire_rate": "30", "bonus_hp": "0"},
+      "heavy":{"mov":"10", "dmg": "40", "fire_rate": "25", "bonus_hp": "20"},
+      "sniper":{"mov":"30", "dmg": "70", "fire_rate": "1", "bonus_hp": "10"}
     },
     "t3":{
       "HP":140,
-      "light":{"mov":"70", "dmg": "10", "fire_rate": "40"},
-      "heavy":{"mov":"10", "dmg": "50", "fire_rate": "35"},
-      "sniper":{"mov":"40", "dmg": "90", "fire_rate": "1"}
+      "light":{"mov":"70", "dmg": "10", "fire_rate": "40", "bonus_hp": "0"},
+      "heavy":{"mov":"10", "dmg": "50", "fire_rate": "35", "bonus_hp": "20"},
+      "sniper":{"mov":"40", "dmg": "90", "fire_rate": "1", "bonus_hp": "10"}
     }
   };
 
