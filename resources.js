@@ -1,8 +1,10 @@
-function Weapon(dmg, rate, name)
+function Weapon(dmg, rate, name, level)
 {
+  this.level = level;
   this.dmg = (dmg === undefined)? 1 : dmg ; // damage per hit
   this.rate = (rate === undefined)? 1 : rate; // Rate of fire
   this.name = (name === undefined)? "Some Gun" : name; // Name of Gun
+
   this.fire = function()
   {
     console.log("FIRING "+this.name);
@@ -15,6 +17,8 @@ function Player(userid, player_name)
   this.name = (player_name === undefined)? "N00B" : player_name;
   this.hp = 100;
   this.movement_speed = 10;
+  this.exp = 0;
+  this.level = 0;
 
   this.weapons = {};
   this.weapons.light = new Weapon(10,10,"Light Gun");
