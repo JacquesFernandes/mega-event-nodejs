@@ -7,8 +7,10 @@
   },
   "dependencies": {
     "body-parser": "~1.15.2",
+    "client-sessions": "^0.7.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
+    "ejs": "^2.5.5",
     "express": "~4.14.0",
     "jade": "~1.11.0",
     "mongoose": "^4.7.8",
@@ -30,7 +32,6 @@
     "physics",
     "teknack"
   ],
-  "author": "mit17k",
   "license": "MIT",
   "bugs": {
     "url": "https://gitlab.com/teknack17/mega-event/issues"

@@ -6,15 +6,22 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 /* TODO Include route objects below */
-var index = require('./routes/index');
-var users = require('./routes/users');
-var shop = require("./routes/shop")
-
+//var index = require('./routes/index');
+//var users = require('./routes/users');
+//var shop = require("./routes/shop")
 var app = express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+var lobby = require('./sockets/lobby')(io);
+var index = require('./routes/index');
+var shop = require('./routes/shop');
+var game = require('./routes/game')(lobby);
+var users = require('./routes/users');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -22,29 +29,32 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
 
 /* TODO EDIT ROUTES TO ACTIVATE PATHS */
 app.use('/', index);
 app.use('/users', users);
 app.use("/shop",shop);
+app.use('/game', game);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+	var err = new Error('Not Found');
+	err.status = 404;
+	next(err);
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+	// set locals, only providing error in development
+	res.locals.message = err.message;
+	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+	// render the error page
+	res.status(err.status || 500);
+	res.render('error');
 });
 
-module.exports = app;
+module.exports = { app: app, server: server };
