@@ -28,13 +28,13 @@ var weaponTypeSchema = mongoose.Schema({
 });
 var weaponSchema = mongoose.Schema({
   light:{
-    type: [weaponTypeSchema]
+    type: weaponTypeSchema
   },
   heavy:{
-    type: [weaponTypeSchema]
+    type: weaponTypeSchema
   },
   sniper:{
-    type:[weaponTypeSchema]
+    type:weaponTypeSchema
   }
 });
 var playerSchema = mongoose.Schema({
@@ -44,7 +44,7 @@ var playerSchema = mongoose.Schema({
   exp: Number,
   level: Number,
   weapons: {
-      type: [weaponSchema]
+      type: weaponSchema
   }
 });
 
