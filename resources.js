@@ -31,27 +31,56 @@ function Player(userid, player_name)
       light: {
         level: Number,
         rate: Number,
-        name: String
+        name: String,
+        dmg: Number
       },
       heavy: {
         level: Number,
         rate: Number,
-        name: String
+        name: String,
+        dmg: Number
       },
       sniper: {
         level: Number,
         rate: Number,
-        name: String
+        name: String,
+        dmg: Number
       }
     }
   };
-  /* METHODS
-  this.getAttributeJSON = function()
+  /* METHODS */
+  this.toJSON = function()
   {
-    ret = {"userid":this.userid, "username":this.name, "hp":this.hp, "movement_speed":this.movement_speed};
+    ret = {
+      userid: this.userid,
+      username: this.name,
+      hp: this.hp,
+      movement_speed: this.movement_speed,
+      exp: this.exp,
+      level: this.level,
+      weapons: [
+        light: {
+          level: this.weapons.light.level,
+          rate: this.weapons.light.rate,
+          name: this.weapons.light.name,
+          dmg: this.weapons.light.dmg
+        },
+        heavy: {
+          level: this.weapons.heavy.level,
+          rate: this.weapons.heavy.rate,
+          name: this.weapons.heavy.name,
+          dmg: this.weapons.heavy.dmg
+        },
+        sniper: {
+          level: this.weapons.sniper.level,
+          rate: this.weapons.sniper.rate,
+          name: this.weapons.sniper.name,
+          dmg: this.weapons.sniper.dmg
+        }
+      ]
+    };
     return(ret);
   };
-  */
 };
 
 module.exports.Player = Player;
