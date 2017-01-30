@@ -6,6 +6,7 @@ var Player = resources.Player;
 var db_name = "mega_event";
 var player_table = "players";
 
+mongoose.connect("mongodb://localhost/"+db_name);
 // Schemas
 /*
 var playerSchema = mongoose.Schema({
@@ -54,27 +55,24 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-
+/*
 router.get("/players",function(req,res)
 {
   playerModel.find({}, function(err, players)
   {
-    console.log("FOUND ");
-    console.log(players);
     if (players.length > 0)
     {
-      console.log("players found...");
       res.status(200).send(players);
     }
     else
     {
-      console.log("no players found...");
       res.status(404).send("No players...");
     }
   });
 });
+*/
 
-router.get("/getPlayers",function(req,res)
+router.get("/getPlayers",function(req,res) // Get *all* player's details
 {
   playerModel.find({},function(err, players)
   {
@@ -89,20 +87,20 @@ router.get("/getPlayers",function(req,res)
   });
 });
 
-router.get("/getPlayer/:name", function(req,res)
+router.get("/getPlayer/:name", function(req,res) // Getting the player details based on the username
 {
   var name = req.params.name;
-  playerModel.findOne({username:name}, function(err, players)
+  playerModel.find({username:name}, function(err, players)
   {
-    console.log(players);
-    if (players.length == 0)
+   
+    if (players.length > 0)
     {
       res.status(200).send(players);
     }
     else
     {
-      res.status(404).send("no players found....");
-      console.log(err);
+      res.status(200).send("No such player...");
+      console.log("error: "+err);
     }
   });
 });
