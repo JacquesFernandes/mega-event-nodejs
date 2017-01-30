@@ -1,5 +1,35 @@
 var express = require("express");
 var router = express.Router();
+var mongoose = require("mongoose");
+var resources = require("../resources");
+var player_class = resources.Player;
+
+var db_name = "mega_event";
+var transaction_table = "transactions";
+var player_table = "players";
+
+// TODO: SET UP AUTH!!!
+
+//Schemas
+var transactionSchema = mongoose.Schema({
+  time: Date,
+  userid: String,
+  amount: Number
+});
+
+/*
+var playerSchema = mongoose.Schema({
+  userid: String,
+  username: String,
+  hp: Number,
+  movement_speed: Number
+  exp: Number,
+  level: Number
+});
+*/
+var playerSchema = mongoose.Schema(player_class);
+
+var transactionModel = mongoose.model(transaction_table,transactionSchema);
 
 router.get("/", function(req, res) // GUI
 { // This method is to render the page
@@ -52,5 +82,25 @@ function getTiers()
     }
   };
 
+
   return(tiers);
+}
+
+function logTransaction(userid,amount)
+{
+  var date = new Date();
+  var time = date.getTime();
+  var transaction_instance = new transactionModel();
+
+  transaction_instance.time = time;
+  transaction_instance.userid = userid;
+  transaction_instance.amount = amount;
+
+  transaction_instance.save();
+}
+
+function getTransactions()
+{
+  var results = transactionModel.find({});
+  return(results);
 }
