@@ -1,6 +1,6 @@
 function Weapon(dmg, rate, name, level)
 {
-  this.level = level;
+  this.level = (level === undefined)? 1 : level ; //level of the gun
   this.dmg = (dmg === undefined)? 1 : dmg ; // damage per hit
   this.rate = (rate === undefined)? 1 : rate; // Rate of fire
   this.name = (name === undefined)? "Some Gun" : name; // Name of Gun
@@ -58,7 +58,7 @@ function Player(userid, player_name)
       movement_speed: this.movement_speed,
       exp: this.exp,
       level: this.level,
-      weapons: [
+      weapons: {
         light: {
           level: this.weapons.light.level,
           rate: this.weapons.light.rate,
@@ -77,7 +77,7 @@ function Player(userid, player_name)
           name: this.weapons.sniper.name,
           dmg: this.weapons.sniper.dmg
         }
-      ]
+      }
     };
     return(ret);
   };
