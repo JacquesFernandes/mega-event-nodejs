@@ -4,7 +4,7 @@ module.exports = function(lobby){
 	var router = express.Router();
 
     router.get('/', function (req, res, next){
-        res.render('index');
+        res.render('game');
     });
 
     return router;
