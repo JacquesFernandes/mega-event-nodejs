@@ -9,6 +9,8 @@ var cursors;
 var player;
 var enemy;
 
+//var astroid_group = [];
+
 var player_light_bullets_group;
 var player_sniper_bullets_group;
 var player_heavy_bullets_group;
@@ -23,7 +25,7 @@ var weapon_key_one_heavy;
 
 var fire_rate_light = 500;
 var fire_rate_heavy = 1500;
-var fire_rate_sniepr = 3000; 
+var fire_rate_sniper = 3000; 
 
 var next_fire_light = 0;
 var next_fire_heavy = 0;
@@ -32,21 +34,50 @@ var next_fire_sniper = 0;
 var player_username = 'mit17k';
 var enemy_username = 'enemy';
 
+// var positions = [
+//     {
+//         'x': 300,
+//         'y': 100
+//     },
+//     {
+//         'x': 800,
+//         'y': 400
+//     },
+//     {
+//         'x': 50,
+//         'y': 400
+//     }
+// ];
+
 PLAYER_SHIP = function (game, username, cursors) {
     
     this.game = game;
     this.username = username;
     this.cursors = cursors;
     
-    this.ship = this.game.add.sprite(this.game.world.randomX, this.game.world.randomY, 'player_space_ship');
+    this.ship = this.game.add.sprite(this.game.world.randomX, this.game.world.randomY, 'space_ship');
     this.ship.scale.setTo(0.5, 0.5);
     this.ship.anchor.setTo(0.5, 0.5);
 
-    this.weapon_point_light_x = Math.floor(this.ship.x) + 60;
-    this.weapon_point_light_y = Math.floor(this.ship.y) - 5;
+    this.ship.animations.add('moveforward', [1, 2]);;
+
+    this.weapon_point_sniper = this.ship.addChild(this.game.make.sprite(150, -2, null));
+    this.shoot_path_sniper_point = this.ship.addChild(this.game.make.sprite(200, -2, null));
+
+    this.weapon_point_heavy_up = this.ship.addChild(this.game.make.sprite(50, 25, null));
+    this.shoot_path_heavy_up_point = this.ship.addChild(this.game.make.sprite(100, 25, null));
+
+    this.weapon_point_heavy_down = this.ship.addChild(this.game.make.sprite(50, -25, null));
+    this.shoot_path_heavy_down_point = this.ship.addChild(this.game.make.sprite(100, -25, null));
+
+    this.weapon_point_light_up = this.ship.addChild(this.game.make.sprite(50, 45, null));
+    this.shoot_path_light_up_point = this.ship.addChild(this.game.make.sprite(100, 45, null));
+
+    this.weapon_point_light_down = this.ship.addChild(this.game.make.sprite(50, -45, null));
+    this.shoot_path_light_down_point = this.ship.addChild(this.game.make.sprite(100, -45, null));
 
     this.game.physics.enable(this.ship, Phaser.Physics.ARCADE);
-    
+
     this.ship.body.collideWorldBounds = true;
     this.ship.body.drag.set(100);
     this.ship.body.maxVelocity.set(400);
@@ -59,38 +90,44 @@ PLAYER_SHIP.prototype.update = function () {
 
     if(this.cursors.up.isDown){
         this.game.physics.arcade.accelerationFromRotation(this.ship.rotation, 400, this.ship.body.acceleration);
+        this.ship.frame = 2;
     }
     else{
         this.ship.body.acceleration.set(0);
+        this.ship.frame = 1;
     }
 
     if(this.cursors.left.isDown){
-        
         this.ship.body.angularVelocity = -200;
-        
-        var new_pos_x = Math.floor(this.ship.x) + ((this.weapon_point_light_x - Math.floor(this.ship.x)) * Math.cos(this.game.math.degToRad(Math.floor(this.ship.angle)))) - ((this.weapon_point_light_y - Math.floor(this.ship.y)) * Math.sin(this.game.math.degToRad(Math.floor(this.ship.angle)))); 
-        var new_pos_y = Math.floor(this.ship.y) + ((this.weapon_point_light_x - Math.floor(this.ship.x)) * Math.sin(this.game.math.degToRad(Math.floor(this.ship.angle)))) + ((this.weapon_point_light_y - Math.floor(this.ship.y)) * Math.cos(this.game.math.degToRad(Math.floor(this.ship.angle)))); 
-
-        this.weapon_point_light_x = new_pos_x;
-        this.weapon_point_light_y = new_pos_y;
-
     }
     else if(this.cursors.right.isDown){
-        
         this.ship.body.angularVelocity = 200;
-        
-        var new_pos_x = Math.floor(this.ship.x) + ((this.weapon_point_light_x - Math.floor(this.ship.x)) * Math.cos(this.game.math.degToRad(Math.floor(this.ship.angle)))) - ((this.weapon_point_light_y - Math.floor(this.ship.y)) * Math.sin(this.game.math.degToRad(Math.floor(this.ship.angle)))); 
-        var new_pos_y = Math.floor(this.ship.y) + ((this.weapon_point_light_x - Math.floor(this.ship.x)) * Math.sin(this.game.math.degToRad(Math.floor(this.ship.angle)))) + ((this.weapon_point_light_y - Math.floor(this.ship.y)) * Math.cos(this.game.math.degToRad(Math.floor(this.ship.angle)))); 
-
-        this.weapon_point_light_x = new_pos_x;
-        this.weapon_point_light_y = new_pos_y;
-
     }
     else{
         this.ship.body.angularVelocity = 0;
     }
 
-}; 
+    if(this.ship.body.velocity.x === 0 && this.ship.body.velocity.y === 0){
+        this.ship.frame = 0;
+    }
+
+};
+
+PLAYER_SHIP.prototype.destroy = function (){
+
+    this.explostion = this.game.add.sprite(this.ship.x, this.ship.y, 'explosion');
+    this.explostion.anchor.setTo(0.5, 0.5);
+    this.explostion.scale.setTo(1.2, 1.2);
+    
+    this.ship.kill();
+
+    this.explostion.animations.add('explode')
+    this.explostion.animations.play('explode', 30 , false);
+    this.explostion.events.onAnimationComplete.add(function (){
+        //
+    });
+
+};
 
 ENEMY_SHIP = function (game, username) {
 
@@ -173,9 +210,14 @@ preloadState.prototype = {
         game.load.image('player_space_ship', '/assets/sprites/shipred.png');
         game.load.image('enemy_space_ship', '/assets/sprites/shipblue.png');
         game.load.image('bullet', '/assets/sprites/bullet.png');
+        game.load.image('astroid', '/assets/sprites/astroid.png');
+
+        game.load.spritesheet('space_ship', '/assets/spritesheet/shipsheet.png', 450, 350, 14);
+        game.load.spritesheet('explosion', 'assets/spritesheet/explosion.png', 64, 64);
 
     },
     create: function () {
+
 
         game.state.start('gameState');
 
@@ -204,7 +246,21 @@ gameState.prototype = {
         cursors = game.input.keyboard.createCursorKeys();
         
         player = new PLAYER_SHIP(game, player_username, cursors);
-        enemy = new ENEMY_SHIP(game, enemy_username);
+        //enemy = new ENEMY_SHIP(game, enemy_username);
+        
+        // for(var i = 0 ; i < 3 ; i++){
+        //     var astroid = game.add.sprite(positions[i].x, positions[i].y, 'astroid');
+            
+        //     astroid.anchor.setTo(0.5, 0.5);
+        //     astroid.scale.setTo(0.5, 0.5);
+            
+        //     game.physics.enable(astroid, Phaser.Physics.ARCADE);
+            
+        //     astroid.body.immovable = true;
+        //     astroid.body.moves = false;
+            
+        //     astroid_group.push(astroid);
+        // }
 
         player_light_bullets_group = game.add.group();
         player_light_bullets_group.enableBody = true;
@@ -258,10 +314,15 @@ gameState.prototype = {
     },
     update: function (){
 
-        game.physics.arcade.collide(player.ship, enemy.ship);
+        //game.physics.arcade.collide(player.ship, enemy.ship);
+        // for(var i = 0 ; i < 3 ; i++){
+        //     game.physics.arcade.collide(player.ship, astroid_group[i], function () {
+        //         player.destroy();
+        //     });
+        // }
 
         player.update();
-        enemy.update();
+        //enemy.update();
 
         if(weapon === 'light'){
             weapon_selection_text.setText('Selected Weapon: Light');
@@ -293,23 +354,66 @@ gameState.prototype = {
 
     },
     render: function (){
-        game.context.fillStyle = 'rgb(255,255,0)';
-        game.context.fillRect(player.weapon_point_light_x, player.weapon_point_light_y, 4, 4);
+        //
     }
 
 };
 
 function fireBullet() {
 
-    if(game.time.now > next_fire_sniper && player_light_bullets_group.countDead() > 0){
+    if(weapon === 'light'){
         
-        next_fire_sniper = game.time.now + next_fire_light;
+        if(game.time.now > next_fire_light && player_light_bullets_group.countDead() > 0){
+        
+            next_fire_light = game.time.now + fire_rate_light;
+            
+            var bullet1 = player_light_bullets_group.getFirstDead();
+            bullet1.reset(player.weapon_point_light_up.world.x, player.weapon_point_light_up.world.y);
+            bullet1.angle = player.ship.angle;
 
-        var bullet = player_light_bullets_group.getFirstDead();
-        //bullet.reset(weapon_point_light.x, weapon_point_light.y);
-        //bullet.angle = player.ship.angle;
+            var bullet2 = player_light_bullets_group.getFirstDead();
+            bullet2.reset(player.weapon_point_light_down.world.x, player.weapon_point_light_down.world.y);
+            bullet2.angle = player.ship.angle;
 
-        //game.physics.arcade.moveToAngle(player.ship.angle, 300);
+            game.physics.arcade.moveToXY(bullet1, player.shoot_path_light_up_point.world.x, player.shoot_path_light_up_point.world.y, 500);
+            game.physics.arcade.moveToXY(bullet2, player.shoot_path_light_down_point.world.x, player.shoot_path_light_down_point.world.y, 500);
+
+        }
+
+    }
+    else if(weapon === 'heavy'){
+
+        if(game.time.now > next_fire_heavy && player_heavy_bullets_group.countDead() > 0){
+        
+            next_fire_heavy = game.time.now + fire_rate_heavy;
+
+            var bullet1 = player_heavy_bullets_group.getFirstDead();
+            bullet1.reset(player.weapon_point_heavy_up.world.x, player.weapon_point_heavy_up.world.y);
+            bullet1.angle = player.ship.angle;
+
+            var bullet2 = player_heavy_bullets_group.getFirstDead();
+            bullet2.reset(player.weapon_point_heavy_down.world.x, player.weapon_point_heavy_down.world.y);
+            bullet2.angle = player.ship.angle;
+
+            game.physics.arcade.moveToXY(bullet1, player.shoot_path_heavy_up_point.world.x, player.shoot_path_heavy_up_point.world.y, 550);
+            game.physics.arcade.moveToXY(bullet2, player.shoot_path_heavy_down_point.world.x, player.shoot_path_heavy_down_point.world.y, 550);
+
+        }
+
+    }
+    else if(weapon === 'sniper'){
+
+        if(game.time.now > next_fire_sniper && player_sniper_bullets_group.countDead() > 0){
+        
+            next_fire_sniper = game.time.now + fire_rate_sniper;
+
+            var bullet = player_sniper_bullets_group.getFirstDead();
+            bullet.reset(player.weapon_point_sniper.world.x, player.weapon_point_sniper.world.y);
+            bullet.angle = player.ship.angle;
+
+            game.physics.arcade.moveToXY(bullet, player.shoot_path_sniper_point.world.x, player.shoot_path_sniper_point.world.y, 600);
+
+        }
 
     }
 

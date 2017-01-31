@@ -6,14 +6,17 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 /* TODO Include route objects below */
+//var index = require('./routes/index');
+//var users = require('./routes/users');
+//var shop = require("./routes/shop")
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var lobby = require('./sockets/lobby')(io);
-
-var index = require('./routes/index')(lobby);
-var shop = require('./routes/shop')(lobby);
+var index = require('./routes/index');
+var shop = require('./routes/shop');
 var game = require('./routes/game')(lobby);
+var users = require('./routes/users');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -32,7 +35,8 @@ app.use('/bower_components', express.static(path.join(__dirname, 'bower_componen
 
 /* TODO EDIT ROUTES TO ACTIVATE PATHS */
 app.use('/', index);
-app.use('/shop', shop);
+app.use('/users', users);
+app.use("/shop",shop);
 app.use('/game', game);
 
 // catch 404 and forward to error handler
