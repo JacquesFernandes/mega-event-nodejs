@@ -1,11 +1,8 @@
-module.exports = function(lobby){
+var express = require('express');
+var router = express.Router();
 
-	var express = require('express');
-	var router = express.Router();
+router.get('/', function (req, res, next){
+    res.render('index');
+});
 
-    router.get('/', function (req, res, next){
-        res.render('index');
-    });
-
-    return router;
-}
+module.exports = router;
