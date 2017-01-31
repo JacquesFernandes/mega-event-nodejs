@@ -19,7 +19,6 @@ var playerSchema = mongoose.Schema({
 });
 */
 
-
 var weaponTypeSchema = mongoose.Schema({
   level: Number,
   rate: Number,
