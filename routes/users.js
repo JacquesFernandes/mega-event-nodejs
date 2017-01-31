@@ -105,7 +105,48 @@ router.get("/getPlayer/:name", function(req,res) // Getting the player details b
   });
 });
 
-router.post("/newPlayer/:name/:id", function(req,res)
+router.get("/getFightInfo/:name",function(req,res) // done
+{
+  /*
+  username
+  movement_speed
+  dmg
+  hp
+  atck speed
+  */
+  var name = req.params.name;
+  playerModel.findOne({username:name},function(err, player)
+  {
+    var ret = {};
+    if (player !== undefined && player !== null)
+    {
+      //console.log(player);
+      ret.username = player.username;
+      ret.movement_speed = player.movement_speed;
+      ret.hp = player.hp;
+      var weapons = player.weapons.toJSON()[0];
+
+      ret.dmg = {
+        light: weapons.light[0].dmg,
+        heavy: weapons.heavy[0].dmg,
+        sniper: weapons.sniper[0].dmg
+      };
+      ret.attack_speed = {
+        light: weapons.light[0].rate,
+        heavy: weapons.heavy[0].rate,
+        sniper: weapons.sniper[0].rate
+      }
+
+      res.status(200).send(ret);
+    }
+    else
+    {
+      res.status(404).send({error: "Player "+name+" not found...."});
+    }
+  });
+});
+
+router.post("/newPlayer/:name/:id", function(req,res) // Disable afterwards ?
 {
   var name = req.params.name;
   var id = req.params.id;
