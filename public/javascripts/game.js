@@ -88,7 +88,7 @@ PLAYER_SHIP = function (game, username, cursors) {
 
 PLAYER_SHIP.prototype.update = function () {
 
-    if(this.cursors.up.isDown){
+    if(this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
         this.game.physics.arcade.accelerationFromRotation(this.ship.rotation, 400, this.ship.body.acceleration);
         this.ship.frame = 2;
     }
@@ -97,10 +97,10 @@ PLAYER_SHIP.prototype.update = function () {
         this.ship.frame = 1;
     }
 
-    if(this.cursors.left.isDown){
+    if(this.game.input.keyboard.isDown(Phaser.Keyboard.A)){
         this.ship.body.angularVelocity = -200;
     }
-    else if(this.cursors.right.isDown){
+    else if(this.game.input.keyboard.isDown(Phaser.Keyboard.D)){
         this.ship.body.angularVelocity = 200;
     }
     else{
@@ -147,26 +147,6 @@ ENEMY_SHIP = function (game, username) {
 };
 
 ENEMY_SHIP.prototype.update = function () {
-
-    if(this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
-        this.game.physics.arcade.accelerationFromRotation(this.ship.rotation, 400, this.ship.body.acceleration);
-    }
-    else{
-        this.ship.body.acceleration.set(0);
-    }
-
-    if(this.game.input.keyboard.isDown(Phaser.Keyboard.A)){
-    
-        this.ship.body.angularVelocity = -200;
-
-    }
-    else if(this.game.input.keyboard.isDown(Phaser.Keyboard.D)){
-        
-        this.ship.body.angularVelocity = 200;
-    }
-    else{
-        this.ship.body.angularVelocity = 0;
-    }
 
 };
 
@@ -218,7 +198,6 @@ preloadState.prototype = {
     },
     create: function () {
 
-
         game.state.start('gameState');
 
     }
@@ -246,6 +225,7 @@ gameState.prototype = {
         cursors = game.input.keyboard.createCursorKeys();
         
         player = new PLAYER_SHIP(game, player_username, cursors);
+        
         //enemy = new ENEMY_SHIP(game, enemy_username);
         
         // for(var i = 0 ; i < 3 ; i++){
