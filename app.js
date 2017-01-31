@@ -9,10 +9,14 @@ var bodyParser = require('body-parser');
 //var index = require('./routes/index');
 //var users = require('./routes/users');
 //var shop = require("./routes/shop")
+
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+
 var lobby = require('./sockets/lobby')(io);
+var client = require('./sockets/client')(io);
+
 var index = require('./routes/index');
 var shop = require('./routes/shop');
 var game = require('./routes/game')(lobby);

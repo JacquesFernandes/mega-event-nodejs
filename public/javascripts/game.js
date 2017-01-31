@@ -1,5 +1,6 @@
 
 var game = new Phaser.Game(1280, 720, Phaser.CANVAS);
+var socket = io();
 
 var loading;
 
@@ -9,7 +10,16 @@ var cursors;
 var player;
 var enemy;
 
-//var astroid_group = [];
+// var player_spawn_x = game.rnd.integerInRange(50, 1220);
+// var player_spawn_y = game.rnd.integerInRange(50, 650);
+
+var player_spawn_x = 800;
+var player_spawn_y = 50;
+
+var enemy_spawn_x;
+var enemy_spawn_y;
+
+var astroid_group = [];
 
 var player_light_bullets_group;
 var player_sniper_bullets_group;
@@ -31,35 +41,48 @@ var next_fire_light = 0;
 var next_fire_heavy = 0;
 var next_fire_sniper = 0;
 
-var player_username = 'mit17k';
-var enemy_username = 'enemy';
+var player_username = 'mit17k'; //prompt('Enter username to continue!');
+var enemy_username;
 
-// var positions = [
-//     {
-//         'x': 300,
-//         'y': 100
-//     },
-//     {
-//         'x': 800,
-//         'y': 400
-//     },
-//     {
-//         'x': 50,
-//         'y': 400
-//     }
-// ];
+var startGame = false;
 
-PLAYER_SHIP = function (game, username, cursors) {
+var positions = [
+    {
+        'x': 300,
+        'y': 100
+    },
+    {
+        'x': 800,
+        'y': 400
+    },
+    {
+        'x': 50,
+        'y': 400
+    }
+];
+
+PLAYER_SHIP = function (game, username, x, y) {
     
     this.game = game;
     this.username = username;
-    this.cursors = cursors;
+    this.x = x;
+    this.y = y;
     
-    this.ship = this.game.add.sprite(this.game.world.randomX, this.game.world.randomY, 'space_ship');
+    this.ship = this.game.add.sprite(this.x, this.y, 'player_space_ship');
     this.ship.scale.setTo(0.5, 0.5);
     this.ship.anchor.setTo(0.5, 0.5);
 
-    this.ship.animations.add('moveforward', [1, 2]);;
+    this.input_up = false;
+    this.input_left = false;
+    this.input_right = false;
+
+    this.ship.animations.add('moveforward', [3, 4, 5]);
+
+    this.ship.animations.add('rotateright', [6, 7, 8]);
+    this.ship.animations.add('rotateleft', [9, 10, 11]);
+
+    this.ship.animations.add('moveforwardrotateleft', [12, 13, 14]);
+    this.ship.animations.add('moveforwardrotateright', [15, 16, 17]);
 
     this.weapon_point_sniper = this.ship.addChild(this.game.make.sprite(150, -2, null));
     this.shoot_path_sniper_point = this.ship.addChild(this.game.make.sprite(200, -2, null));
@@ -90,26 +113,51 @@ PLAYER_SHIP.prototype.update = function () {
 
     if(this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
         this.game.physics.arcade.accelerationFromRotation(this.ship.rotation, 400, this.ship.body.acceleration);
-        this.ship.frame = 2;
+        this.input_up = true;
     }
     else{
         this.ship.body.acceleration.set(0);
-        this.ship.frame = 1;
+        this.input_up = false;
     }
 
-    if(this.game.input.keyboard.isDown(Phaser.Keyboard.A)){
+    if(this.game.input.keyboard.isDown(Phaser.Keyboard.A) && !this.game.input.keyboard.isDown(Phaser.Keyboard.D)){
+        this.input_left = true;
         this.ship.body.angularVelocity = -200;
     }
-    else if(this.game.input.keyboard.isDown(Phaser.Keyboard.D)){
+    else{
+        this.input_left = false;
+    }
+
+    if(!this.game.input.keyboard.isDown(Phaser.Keyboard.A) && this.game.input.keyboard.isDown(Phaser.Keyboard.D)){
+        this.input_right = true;
         this.ship.body.angularVelocity = 200;
     }
     else{
+        this.input_right = false;
+    }
+    if(!this.game.input.keyboard.isDown(Phaser.Keyboard.A) && !this.game.input.keyboard.isDown(Phaser.Keyboard.D)){
         this.ship.body.angularVelocity = 0;
     }
 
-    if(this.ship.body.velocity.x === 0 && this.ship.body.velocity.y === 0){
+    if(!this.input_up && this.input_left && !this.input_right){
+        this.ship.animations.play('rotateleft', 30, true);
+    }
+    if(!this.input_up && !this.input_left && this.input_right){
+        this.ship.animations.play('rotateright', 30, true);
+    }
+    if(this.input_up && !this.input_left && !this.input_right){
+        this.ship.animations.play('moveforward', 30, true);
+    }
+    if(this.input_up && this.input_left && !this.input_right){
+        this.ship.animations.play('moveforwardrotateleft', 30, true);
+    }
+    if(this.input_up && !this.input_left && this.input_right){
+        this.ship.animations.play('moveforwardrotateright', 30, true);
+    }
+    if(!this.input_up && !this.input_left && !this.input_right){
         this.ship.frame = 0;
     }
+
 
 };
 
@@ -129,12 +177,14 @@ PLAYER_SHIP.prototype.destroy = function (){
 
 };
 
-ENEMY_SHIP = function (game, username) {
+ENEMY_SHIP = function (game, username, x, y) {
 
     this.game = game;
     this.username = username;
+    this.x = x;
+    this.y = y;
     
-    this.ship = this.game.add.sprite(this.game.world.randomX, this.game.world.randomY, 'enemy_space_ship');
+    this.ship = this.game.add.sprite(this.x, this.y, 'enemy_space_ship');
     this.ship.scale.setTo(0.5, 0.5);
     this.ship.anchor.setTo(0.5, 0.5);
 
@@ -192,7 +242,7 @@ preloadState.prototype = {
         game.load.image('bullet', '/assets/sprites/bullet.png');
         game.load.image('astroid', '/assets/sprites/astroid.png');
 
-        game.load.spritesheet('space_ship', '/assets/spritesheet/shipsheet.png', 450, 350, 14);
+        game.load.spritesheet('player_space_ship', '/assets/spritesheet/shipsheet_1.png', 450, 350, 18);
         game.load.spritesheet('explosion', 'assets/spritesheet/explosion.png', 64, 64);
 
     },
@@ -222,25 +272,32 @@ gameState.prototype = {
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
         tilesprite = game.add.tileSprite(0, 0, 1280, 720, 'space');
-        cursors = game.input.keyboard.createCursorKeys();
         
-        player = new PLAYER_SHIP(game, player_username, cursors);
-        
+        player = new PLAYER_SHIP(game, player_username, player_spawn_x, player_spawn_y);
+
+        game.input.keyboard.removeKeyCapture(Phaser.Keyboard.ONE);
+        game.input.keyboard.removeKeyCapture(Phaser.Keyboard.TWO);
+        game.input.keyboard.removeKeyCapture(Phaser.Keyboard.THREE);
+
+        game.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
+        game.input.keyboard.removeKeyCapture(Phaser.Keyboard.A);
+        game.input.keyboard.removeKeyCapture(Phaser.Keyboard.D);
+
         //enemy = new ENEMY_SHIP(game, enemy_username);
         
-        // for(var i = 0 ; i < 3 ; i++){
-        //     var astroid = game.add.sprite(positions[i].x, positions[i].y, 'astroid');
+        for(var i = 0 ; i < 3 ; i++){
+            var astroid = game.add.sprite(positions[i].x, positions[i].y, 'astroid');
             
-        //     astroid.anchor.setTo(0.5, 0.5);
-        //     astroid.scale.setTo(0.5, 0.5);
+            astroid.anchor.setTo(0.5, 0.5);
+            astroid.scale.setTo(0.5, 0.5);
             
-        //     game.physics.enable(astroid, Phaser.Physics.ARCADE);
+            game.physics.enable(astroid, Phaser.Physics.ARCADE);
             
-        //     astroid.body.immovable = true;
-        //     astroid.body.moves = false;
+            astroid.body.immovable = true;
+            astroid.body.moves = false;
             
-        //     astroid_group.push(astroid);
-        // }
+            astroid_group.push(astroid);
+        }
 
         player_light_bullets_group = game.add.group();
         player_light_bullets_group.enableBody = true;
@@ -295,11 +352,13 @@ gameState.prototype = {
     update: function (){
 
         //game.physics.arcade.collide(player.ship, enemy.ship);
-        // for(var i = 0 ; i < 3 ; i++){
-        //     game.physics.arcade.collide(player.ship, astroid_group[i], function () {
-        //         player.destroy();
-        //     });
-        // }
+        
+        for(var i = 0 ; i < 3 ; i++){
+            game.physics.arcade.collide(player.ship, astroid_group[i], function () {
+                player.destroy();
+                player = new PLAYER_SHIP(game, player_username, player_spawn_x, player_spawn_y);
+            });
+        }
 
         player.update();
         //enemy.update();
@@ -411,6 +470,10 @@ function changeWeaponToSniper() {
     weapon = 'sniper';
 }
 
+
+if(player_username){
+    //socket.emit();
+}
 game.state.add('bootState', bootState);
 game.state.add('preloadState', preloadState);
 game.state.add('gameState', gameState);
