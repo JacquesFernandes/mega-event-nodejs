@@ -58,7 +58,7 @@ module.exports = function(io){
         socket.on('playerPositionData', function(data){
 
             if(io.sockets.connected[client_socket_id]){
-                io.sockets.connected[client_socket_id].emit('newPlayerPositionData', data);
+                io.sockets.emit('newPlayerPositionData', data);
             }
 
         });

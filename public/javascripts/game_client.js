@@ -48,6 +48,7 @@ function init(){
     var enemy_currentAngle = 0;
 
     var input_info = { 'input_up': false, 'input_left': false, 'input_right': false };
+    var enemy_input_info = { 'input_up': false, 'input_left': false, 'input_right': false };
 
     var player_light_bullets_group;
     var player_sniper_bullets_group;
@@ -94,20 +95,20 @@ function init(){
         this.ship.animations.add('moveforwardrotateleft', [12, 13, 14]);
         this.ship.animations.add('moveforwardrotateright', [15, 16, 17]);
 
-        this.weapon_point_sniper = this.ship.addChild(this.game.make.sprite(150, -2, null));
-        this.shoot_path_sniper_point = this.ship.addChild(this.game.make.sprite(200, -2, null));
+        this.weapon_point_sniper = this.ship.addChild(this.game.make.sprite(150, -20, null));
+        this.shoot_path_sniper_point = this.ship.addChild(this.game.make.sprite(200, -20, null));
 
-        this.weapon_point_heavy_up = this.ship.addChild(this.game.make.sprite(50, 25, null));
-        this.shoot_path_heavy_up_point = this.ship.addChild(this.game.make.sprite(100, 25, null));
+        this.weapon_point_heavy_up = this.ship.addChild(this.game.make.sprite(50, 0, null));
+        this.shoot_path_heavy_up_point = this.ship.addChild(this.game.make.sprite(100, 0, null));
 
-        this.weapon_point_heavy_down = this.ship.addChild(this.game.make.sprite(50, -25, null));
-        this.shoot_path_heavy_down_point = this.ship.addChild(this.game.make.sprite(100, -25, null));
+        this.weapon_point_heavy_down = this.ship.addChild(this.game.make.sprite(50, -65, null));
+        this.shoot_path_heavy_down_point = this.ship.addChild(this.game.make.sprite(100, -65, null));
 
-        this.weapon_point_light_up = this.ship.addChild(this.game.make.sprite(50, 45, null));
-        this.shoot_path_light_up_point = this.ship.addChild(this.game.make.sprite(100, 45, null));
+        this.weapon_point_light_up = this.ship.addChild(this.game.make.sprite(50, 35, null));
+        this.shoot_path_light_up_point = this.ship.addChild(this.game.make.sprite(100, 35, null));
 
-        this.weapon_point_light_down = this.ship.addChild(this.game.make.sprite(50, -45, null));
-        this.shoot_path_light_down_point = this.ship.addChild(this.game.make.sprite(100, -45, null));
+        this.weapon_point_light_down = this.ship.addChild(this.game.make.sprite(50, -65, null));
+        this.shoot_path_light_down_point = this.ship.addChild(this.game.make.sprite(100, -65, null));
 
         this.game.camera.follow(this.ship, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
@@ -142,6 +143,14 @@ function init(){
         this.ship.x = x;
         this.ship.y = y;
         this.ship.angle = angle;
+
+    };
+
+    PLAYER_SHIP.prototype.updateInputInfo = function (input_up, input_left, input_right) {
+
+        this.input_up = input_up;
+        this.input_left = input_left;
+        this.input_right = input_right;
 
     };
 
@@ -184,20 +193,20 @@ function init(){
         this.ship.animations.add('moveforwardrotateleft', [12, 13, 14]);
         this.ship.animations.add('moveforwardrotateright', [15, 16, 17]);
         
-        this.weapon_point_sniper = this.ship.addChild(this.game.make.sprite(150, -2, null));
-        this.shoot_path_sniper_point = this.ship.addChild(this.game.make.sprite(200, -2, null));
+        this.weapon_point_sniper = this.ship.addChild(this.game.make.sprite(150, -20, null));
+        this.shoot_path_sniper_point = this.ship.addChild(this.game.make.sprite(200, -20, null));
 
-        this.weapon_point_heavy_up = this.ship.addChild(this.game.make.sprite(50, 25, null));
-        this.shoot_path_heavy_up_point = this.ship.addChild(this.game.make.sprite(100, 25, null));
+        this.weapon_point_heavy_up = this.ship.addChild(this.game.make.sprite(50, 0, null));
+        this.shoot_path_heavy_up_point = this.ship.addChild(this.game.make.sprite(100, 0, null));
 
-        this.weapon_point_heavy_down = this.ship.addChild(this.game.make.sprite(50, -25, null));
-        this.shoot_path_heavy_down_point = this.ship.addChild(this.game.make.sprite(100, -25, null));
+        this.weapon_point_heavy_down = this.ship.addChild(this.game.make.sprite(50, -65, null));
+        this.shoot_path_heavy_down_point = this.ship.addChild(this.game.make.sprite(100, -65, null));
 
-        this.weapon_point_light_up = this.ship.addChild(this.game.make.sprite(50, 45, null));
-        this.shoot_path_light_up_point = this.ship.addChild(this.game.make.sprite(100, 45, null));
+        this.weapon_point_light_up = this.ship.addChild(this.game.make.sprite(50, 35, null));
+        this.shoot_path_light_up_point = this.ship.addChild(this.game.make.sprite(100, 35, null));
 
-        this.weapon_point_light_down = this.ship.addChild(this.game.make.sprite(50, -45, null));
-        this.shoot_path_light_down_point = this.ship.addChild(this.game.make.sprite(100, -45, null));
+        this.weapon_point_light_down = this.ship.addChild(this.game.make.sprite(50, -65, null));
+        this.shoot_path_light_down_point = this.ship.addChild(this.game.make.sprite(100, -65, null));
 
     };
 
@@ -224,6 +233,14 @@ function init(){
 
     };
 
+    ENEMY_SHIP.prototype.updateInputInfo = function (input_up, input_left, input_right) {
+
+        this.input_up = input_up;
+        this.input_left = input_left;
+        this.input_right = input_right;
+
+    };
+
     ENEMY_SHIP.prototype.updatePositionInfo = function (x, y, angle){
 
         this.ship.x = x;
@@ -245,6 +262,66 @@ function init(){
         this.explostion.events.onAnimationComplete.add(function (){
             //
         });
+
+    };
+
+    PLAYER_SNIPER_BULLET = function (game, source_x , source_y , angle, destination_x, destination_y) {
+
+        this.game = game;
+        
+        this.source_x = source_x;
+        this.source_y = source_y;
+
+        this.angle = angle;
+
+        this.destination_x = destination_x;
+        this.destination_y = destination_y;
+
+        this.sniper_bullet = this.game.add.sprite(this.source_x, this.source_y, 'sniper_bullet');
+        this.sniper_bullet.angle = angle;
+
+        this.game.physics.enable(this.sniper_bullet, Phaser.Physics.ARCADE);
+        this.sniper_bullet.checkWorldBounds = true;
+        this.sniper_bullet.outOfBoundsKill = true;
+
+        this.sniper_bullet.animations.add('fire');
+        this.sniper_bullet.animations.play('fire', 30 , true);
+
+        this.game.physics.arcade.moveToXY(this.sniper_bullet, this.destination_x, this.destination_y, 600);
+    
+    };
+
+    PLAYER_SNIPER_BULLET.prototype.update = function (){
+
+    };
+
+    ENEMY_SNIPER_BULLET = function (game, source_x , source_y , angle, destination_x, destination_y) {
+
+        this.game = game;
+        
+        this.source_x = source_x;
+        this.source_y = source_y;
+
+        this.angle = angle;
+
+        this.destination_x = destination_x;
+        this.destination_y = destination_y;
+
+        this.sniper_bullet = this.game.add.sprite(this.source_x, this.source_y, 'sniper_bullet');
+        this.sniper_bullet.angle = angle;
+
+        this.game.physics.enable(this.sniper_bullet, Phaser.Physics.ARCADE);
+        this.sniper_bullet.checkWorldBounds = true;
+        this.sniper_bullet.outOfBoundsKill = true;
+
+        this.sniper_bullet.animations.add('fire');
+        this.sniper_bullet.animations.play('fire', 30 , true);
+
+        this.game.physics.arcade.moveToXY(this.sniper_bullet, this.destination_x, this.destination_y, 600);
+    
+    };
+
+    ENEMY_SNIPER_BULLET.prototype.update = function (){
 
     };
 
@@ -285,11 +362,13 @@ function init(){
             loading.anchor.setTo(0.5, 0.5);
 
             game.load.image('space', '/assets/sprites/space.png');
-            game.load.image('bullet', '/assets/sprites/bullet.png');
+            game.load.image('light_bullet', '/assets/sprites/light.png');
+            game.load.image('heavy_bullet', '/assets/sprites/heavy.png');
 
             game.load.spritesheet('player_space_ship', '/assets/spritesheet/shipsheet_1.png', 450, 350, 18);
             game.load.spritesheet('enemy_space_ship', '/assets/spritesheet/shipsheet_2.png', 450, 350, 18);
-            game.load.spritesheet('explosion', '/assets/spritesheet/explosion.png', 64, 64);
+            game.load.spritesheet('explosion', '/assets/spritesheet/explosion.png', 64, 64, 50);
+            game.load.spritesheet('sniper_bullet', '/assets/spritesheet/sniper.png', 100, 25, 3);
 
         },
         update: function () {
@@ -341,23 +420,15 @@ function init(){
             player_light_bullets_group.enableBody = true;
             player_light_bullets_group.physicsBodyType = Phaser.Physics.ARCADE;
 
-            player_light_bullets_group.createMultiple(50, 'bullet');
+            player_light_bullets_group.createMultiple(50, 'light_bullet');
             player_light_bullets_group.setAll('checkWorldBounds', true);
             player_light_bullets_group.setAll('outOfBoundsKill', true);
-
-            player_sniper_bullets_group = game.add.group();
-            player_sniper_bullets_group.enableBody = true;
-            player_sniper_bullets_group.physicsBodyType = Phaser.Physics.ARCADE;
-
-            player_sniper_bullets_group.createMultiple(50, 'bullet');
-            player_sniper_bullets_group.setAll('checkWorldBounds', true);
-            player_sniper_bullets_group.setAll('outOfBoundsKill', true);
 
             player_heavy_bullets_group = game.add.group();
             player_heavy_bullets_group.enableBody = true;
             player_heavy_bullets_group.physicsBodyType = Phaser.Physics.ARCADE;
 
-            player_heavy_bullets_group.createMultiple(50, 'bullet');
+            player_heavy_bullets_group.createMultiple(50, 'heavy_bullet');
             player_heavy_bullets_group.setAll('checkWorldBounds', true);
             player_heavy_bullets_group.setAll('outOfBoundsKill', true);
 
@@ -395,25 +466,33 @@ function init(){
             player.updatePositionInfo(player_currentX, player_currentY, player_currentAngle);
             enemy.updatePositionInfo(enemy_currentX, enemy_currentY, enemy_currentAngle);
 
+            enemy.updateInputInfo(enemy_input_info.input_up, enemy_input_info.input_left, enemy_input_info.input_right);
+
             if(game.input.keyboard.isDown(Phaser.Keyboard.W)){
                 input_info.input_up = true;
+                player.updateInputInfo(input_info.input_up, input_info.input_left, input_info.input_right);
             }
             else{
                 input_info.input_up = false;
+                player.updateInputInfo(input_info.input_up, input_info.input_left, input_info.input_right);
             }
 
             if(game.input.keyboard.isDown(Phaser.Keyboard.A) && !game.input.keyboard.isDown(Phaser.Keyboard.D)){
                 input_info.input_left = true;
+                player.updateInputInfo(input_info.input_up, input_info.input_left, input_info.input_right);
             }
             else{
                 input_info.input_left = false;
+                player.updateInputInfo(input_info.input_up, input_info.input_left, input_info.input_right);
             } 
             
             if(!game.input.keyboard.isDown(Phaser.Keyboard.A) && game.input.keyboard.isDown(Phaser.Keyboard.D)){
                 input_info.input_right = true;
+                player.updateInputInfo(input_info.input_up, input_info.input_left, input_info.input_right);
             }
             else{
                 input_info.input_right = false;
+                player.updateInputInfo(input_info.input_up, input_info.input_left, input_info.input_right);
             }
 
             socket.emit('clientInput', input_info);
@@ -497,16 +576,11 @@ function init(){
         }
         else if(weapon === 'sniper'){
 
-            if(game.time.now > next_fire_sniper && player_sniper_bullets_group.countDead() > 0){
+            if(game.time.now > next_fire_sniper){
             
                 next_fire_sniper = game.time.now + fire_rate_sniper;
 
-                var bullet = player_sniper_bullets_group.getFirstDead();
-                bullet.reset(player.weapon_point_sniper.world.x, player.weapon_point_sniper.world.y);
-                bullet.angle = player.ship.angle;
-
-                game.physics.arcade.moveToXY(bullet, player.shoot_path_sniper_point.world.x, player.shoot_path_sniper_point.world.y, 600);
-
+                new PLAYER_SNIPER_BULLET(game, player.weapon_point_sniper.world.x, player.weapon_point_sniper.world.y, player.ship.angle, player.shoot_path_sniper_point.world.x, player.shoot_path_sniper_point.world.y);
             }
 
         }
@@ -535,6 +609,8 @@ function init(){
         enemy_currentY = data.host.y;
         enemy_currentAngle = data.host.angle;
 
+        enemy_input_info = data.input_info;
+        
     });
 
     game.state.add('bootState', bootState);
