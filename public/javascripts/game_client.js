@@ -54,6 +54,10 @@ function init(){
     var player_sniper_bullets_group;
     var player_heavy_bullets_group;
 
+    var enemy_light_bullets_group;
+    var enemy_sniper_bullets_group;
+    var enemy_heavy_bullets_group;
+
     var weapon = 'light';
     var weapon_selection_text;
     var weapon_status_text;
@@ -112,6 +116,7 @@ function init(){
 
         this.game.camera.follow(this.ship, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
+        this.game.physics.enable(this.ship, Phaser.Physics.ARCADE);
     };
 
     PLAYER_SHIP.prototype.update = function () {
@@ -208,6 +213,7 @@ function init(){
         this.weapon_point_light_down = this.ship.addChild(this.game.make.sprite(50, -65, null));
         this.shoot_path_light_down_point = this.ship.addChild(this.game.make.sprite(100, -65, null));
 
+        this.game.physics.enable(this.ship, Phaser.Physics.ARCADE);
     };
 
     ENEMY_SHIP.prototype.update = function () {
@@ -265,66 +271,6 @@ function init(){
 
     };
 
-    PLAYER_SNIPER_BULLET = function (game, source_x , source_y , angle, destination_x, destination_y) {
-
-        this.game = game;
-        
-        this.source_x = source_x;
-        this.source_y = source_y;
-
-        this.angle = angle;
-
-        this.destination_x = destination_x;
-        this.destination_y = destination_y;
-
-        this.sniper_bullet = this.game.add.sprite(this.source_x, this.source_y, 'sniper_bullet');
-        this.sniper_bullet.angle = angle;
-
-        this.game.physics.enable(this.sniper_bullet, Phaser.Physics.ARCADE);
-        this.sniper_bullet.checkWorldBounds = true;
-        this.sniper_bullet.outOfBoundsKill = true;
-
-        this.sniper_bullet.animations.add('fire');
-        this.sniper_bullet.animations.play('fire', 30 , true);
-
-        this.game.physics.arcade.moveToXY(this.sniper_bullet, this.destination_x, this.destination_y, 600);
-    
-    };
-
-    PLAYER_SNIPER_BULLET.prototype.update = function (){
-
-    };
-
-    ENEMY_SNIPER_BULLET = function (game, source_x , source_y , angle, destination_x, destination_y) {
-
-        this.game = game;
-        
-        this.source_x = source_x;
-        this.source_y = source_y;
-
-        this.angle = angle;
-
-        this.destination_x = destination_x;
-        this.destination_y = destination_y;
-
-        this.sniper_bullet = this.game.add.sprite(this.source_x, this.source_y, 'sniper_bullet');
-        this.sniper_bullet.angle = angle;
-
-        this.game.physics.enable(this.sniper_bullet, Phaser.Physics.ARCADE);
-        this.sniper_bullet.checkWorldBounds = true;
-        this.sniper_bullet.outOfBoundsKill = true;
-
-        this.sniper_bullet.animations.add('fire');
-        this.sniper_bullet.animations.play('fire', 30 , true);
-
-        this.game.physics.arcade.moveToXY(this.sniper_bullet, this.destination_x, this.destination_y, 600);
-    
-    };
-
-    ENEMY_SNIPER_BULLET.prototype.update = function (){
-
-    };
-
     var bootState = function () {
         console.log('Booting phaser...');
     };
@@ -364,11 +310,11 @@ function init(){
             game.load.image('space', '/assets/sprites/space.png');
             game.load.image('light_bullet', '/assets/sprites/light.png');
             game.load.image('heavy_bullet', '/assets/sprites/heavy.png');
+            game.load.image('sniper_bullet', '/assets/sprites/sniper.png');
 
             game.load.spritesheet('player_space_ship', '/assets/spritesheet/shipsheet_1.png', 450, 350, 18);
             game.load.spritesheet('enemy_space_ship', '/assets/spritesheet/shipsheet_2.png', 450, 350, 18);
             game.load.spritesheet('explosion', '/assets/spritesheet/explosion.png', 64, 64, 50);
-            game.load.spritesheet('sniper_bullet', '/assets/spritesheet/sniper.png', 100, 25, 3);
 
         },
         update: function () {
@@ -432,6 +378,39 @@ function init(){
             player_heavy_bullets_group.setAll('checkWorldBounds', true);
             player_heavy_bullets_group.setAll('outOfBoundsKill', true);
 
+            player_sniper_bullets_group = game.add.group();
+            player_sniper_bullets_group.enableBody = true;
+            player_sniper_bullets_group.physicsBodyType = Phaser.Physics.ARCADE;
+
+            player_sniper_bullets_group.createMultiple(50, 'sniper_bullet');
+            player_sniper_bullets_group.setAll('checkWorldBounds', true);
+            player_sniper_bullets_group.setAll('outOfBoundsKill', true);
+
+            /* Enemy Bullets */
+            enemy_light_bullets_group = game.add.group();
+            enemy_light_bullets_group.enableBody = true;
+            enemy_light_bullets_group.physicsBodyType = Phaser.Physics.ARCADE;
+
+            enemy_light_bullets_group.createMultiple(50, 'light_bullet');
+            enemy_light_bullets_group.setAll('checkWorldBounds', true);
+            enemy_light_bullets_group.setAll('outOfBoundsKill', true);
+
+            enemy_heavy_bullets_group = game.add.group();
+            enemy_heavy_bullets_group.enableBody = true;
+            enemy_heavy_bullets_group.physicsBodyType = Phaser.Physics.ARCADE;
+
+            enemy_heavy_bullets_group.createMultiple(50, 'heavy_bullet');
+            enemy_heavy_bullets_group.setAll('checkWorldBounds', true);
+            enemy_heavy_bullets_group.setAll('outOfBoundsKill', true);
+
+            enemy_sniper_bullets_group = game.add.group();
+            enemy_sniper_bullets_group.enableBody = true;
+            enemy_sniper_bullets_group.physicsBodyType = Phaser.Physics.ARCADE;
+
+            enemy_sniper_bullets_group.createMultiple(50, 'sniper_bullet');
+            enemy_sniper_bullets_group.setAll('checkWorldBounds', true);
+            enemy_sniper_bullets_group.setAll('outOfBoundsKill', true);
+
             game.input.onDown.add(fireBullet, this);
 
             weapon_key_light = game.input.keyboard.addKey(Phaser.Keyboard.ONE);
@@ -467,6 +446,30 @@ function init(){
             enemy.updatePositionInfo(enemy_currentX, enemy_currentY, enemy_currentAngle);
 
             enemy.updateInputInfo(enemy_input_info.input_up, enemy_input_info.input_left, enemy_input_info.input_right);
+
+            game.physics.arcade.overlap( player_light_bullets_group, enemy.ship, function(tank, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( player_heavy_bullets_group, enemy.ship, function(tank, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( player_sniper_bullets_group, enemy.ship, function(tank, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( enemy_light_bullets_group, player.ship, function(tank, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( enemy_heavy_bullets_group, player.ship, function(tank, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( enemy_sniper_bullets_group, player.ship, function(tank, bullet){
+                bullet.kill();
+            });
 
             if(game.input.keyboard.isDown(Phaser.Keyboard.W)){
                 input_info.input_up = true;
@@ -551,6 +554,8 @@ function init(){
                 game.physics.arcade.moveToXY(bullet1, player.shoot_path_light_up_point.world.x, player.shoot_path_light_up_point.world.y, 500);
                 game.physics.arcade.moveToXY(bullet2, player.shoot_path_light_down_point.world.x, player.shoot_path_light_down_point.world.y, 500);
 
+                socket.emit('newClientBullet', { 'type': 'light'});
+
             }
 
         }
@@ -571,16 +576,25 @@ function init(){
                 game.physics.arcade.moveToXY(bullet1, player.shoot_path_heavy_up_point.world.x, player.shoot_path_heavy_up_point.world.y, 550);
                 game.physics.arcade.moveToXY(bullet2, player.shoot_path_heavy_down_point.world.x, player.shoot_path_heavy_down_point.world.y, 550);
 
+                socket.emit('newClientBullet', { 'type': 'heavy'});
+
             }
 
         }
         else if(weapon === 'sniper'){
 
-            if(game.time.now > next_fire_sniper){
+            if(game.time.now > next_fire_sniper && player_sniper_bullets_group.countDead() > 0){
             
                 next_fire_sniper = game.time.now + fire_rate_sniper;
 
-                new PLAYER_SNIPER_BULLET(game, player.weapon_point_sniper.world.x, player.weapon_point_sniper.world.y, player.ship.angle, player.shoot_path_sniper_point.world.x, player.shoot_path_sniper_point.world.y);
+                var bullet = player_sniper_bullets_group.getFirstDead();
+                bullet.reset(player.weapon_point_sniper.world.x, player.weapon_point_sniper.world.y);
+                bullet.angle = player.ship.angle;
+
+                game.physics.arcade.moveToXY(bullet, player.shoot_path_sniper_point.world.x, player.shoot_path_sniper_point.world.y, 600);
+
+                socket.emit('newClientBullet', { 'type': 'sniper'});
+
             }
 
         }
@@ -611,6 +625,47 @@ function init(){
 
         enemy_input_info = data.input_info;
         
+    });
+
+    socket.on('spawnHostBullet', function (data){
+
+        if(data.type === 'light'){
+            
+            var bullet1 = enemy_light_bullets_group.getFirstDead();
+            bullet1.reset(enemy.weapon_point_light_up.world.x, enemy.weapon_point_light_up.world.y);
+            bullet1.angle = enemy.ship.angle;
+
+            var bullet2 = enemy_light_bullets_group.getFirstDead();
+            bullet2.reset(enemy.weapon_point_light_down.world.x, enemy.weapon_point_light_down.world.y);
+            bullet2.angle = enemy.ship.angle;
+
+            game.physics.arcade.moveToXY(bullet1, enemy.shoot_path_light_up_point.world.x, enemy.shoot_path_light_up_point.world.y, 500);
+            game.physics.arcade.moveToXY(bullet2, enemy.shoot_path_light_down_point.world.x, enemy.shoot_path_light_down_point.world.y, 500);
+        
+        }
+        else if(data.type === 'heavy'){
+
+            var bullet1 = enemy_heavy_bullets_group.getFirstDead();
+            bullet1.reset(enemy.weapon_point_heavy_up.world.x, enemy.weapon_point_heavy_up.world.y);
+            bullet1.angle = enemy.ship.angle;
+
+            var bullet2 = enemy_heavy_bullets_group.getFirstDead();
+            bullet2.reset(enemy.weapon_point_heavy_down.world.x, enemy.weapon_point_heavy_down.world.y);
+            bullet2.angle = enemy.ship.angle;
+
+            game.physics.arcade.moveToXY(bullet1, enemy.shoot_path_heavy_up_point.world.x, enemy.shoot_path_heavy_up_point.world.y, 550);
+            game.physics.arcade.moveToXY(bullet2, enemy.shoot_path_heavy_down_point.world.x, enemy.shoot_path_heavy_down_point.world.y, 550);
+
+        }
+        else if(data.type === 'sniper'){
+
+            var bullet = enemy_sniper_bullets_group.getFirstDead();
+            bullet.reset(enemy.weapon_point_sniper.world.x, enemy.weapon_point_sniper.world.y);
+            bullet.angle = enemy.ship.angle;
+
+            game.physics.arcade.moveToXY(bullet, enemy.shoot_path_sniper_point.world.x, enemy.shoot_path_sniper_point.world.y, 600);
+
+        }
     });
 
     game.state.add('bootState', bootState);

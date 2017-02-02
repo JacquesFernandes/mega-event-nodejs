@@ -71,6 +71,22 @@ module.exports = function(io){
 
         });
 
+        socket.on('newClientBullet', function(data){
+            
+            if(io.sockets.connected[host_socket_id]){
+                io.sockets.connected[host_socket_id].emit('spawnClientBullet', data);
+            }
+
+        });
+
+        socket.on('newHostBullet', function(data){
+            
+            if(io.sockets.connected[client_socket_id]){
+                io.sockets.connected[client_socket_id].emit('spawnHostBullet', data);
+            }
+
+        });
+
         socket.on('disconnect', function () {
             
             io.sockets.emit('playerDisconnection');
