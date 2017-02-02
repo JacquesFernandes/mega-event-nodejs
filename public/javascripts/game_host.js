@@ -7,6 +7,12 @@ socket.on('connect', function() {
 var player_username;
 var enemy_username;
 
+var player_hp = 100;
+var enemy_hp = 100;
+
+var player_current_hp = 100;
+var enemy_current_hp = 100;
+
 $.ajax({
     url: '/game/new_game',
     type: 'POST',
@@ -50,8 +56,6 @@ function init(){
     var enemy_heavy_bullets_group;
 
     var weapon = 'light';
-    var weapon_selection_text;
-    var weapon_status_text;
 
     var weapon_key_light;
     var weapon_key_sniper;
@@ -64,6 +68,12 @@ function init(){
     var next_fire_light = 0;
     var next_fire_heavy = 0;
     var next_fire_sniper = 0;
+
+    var redhud;
+    var bluehud;
+    var player_healthbar;
+    var enemy_healthbar;
+    var loadout;
 
     var startGame = false;
 
@@ -187,10 +197,7 @@ function init(){
         this.ship.kill();
 
         this.explostion.animations.add('explode')
-        this.explostion.animations.play('explode', 30 , false);
-        this.explostion.events.onAnimationComplete.add(function (){
-            //
-        });
+        this.explostion.animations.play('explode', 30 , false, true);
 
     };
 
@@ -303,10 +310,7 @@ function init(){
         this.ship.kill();
 
         this.explostion.animations.add('explode')
-        this.explostion.animations.play('explode', 30 , false);
-        this.explostion.events.onAnimationComplete.add(function (){
-            //
-        });
+        this.explostion.animations.play('explode', 30 , false, true);
 
     };
 
@@ -350,10 +354,14 @@ function init(){
             game.load.image('light_bullet', '/assets/sprites/light.png');
             game.load.image('heavy_bullet', '/assets/sprites/heavy.png');
             game.load.image('sniper_bullet', '/assets/sprites/sniper.png');
+            game.load.image('bluehud', '/assets/sprites/bluehud.png');
+            game.load.image('redhud', '/assets/sprites/redhud.png');
+            game.load.image('healthbar', '/assets/sprites/healthbar.png');
 
             game.load.spritesheet('player_space_ship', '/assets/spritesheet/shipsheet_1.png', 450, 350, 18);
             game.load.spritesheet('enemy_space_ship', '/assets/spritesheet/shipsheet_2.png', 450, 350, 18);
-            game.load.spritesheet('explosion', '/assets/spritesheet/explosion.png', 64, 64, 50);
+            game.load.spritesheet('explosion', '/assets/spritesheet/explosion.png', 130, 130, 4);
+            game.load.spritesheet('loadout', '/assets/spritesheet/loadout.png', 400, 500, 8);
 
         },
         update: function () {
@@ -388,6 +396,24 @@ function init(){
             
             player = new PLAYER_SHIP(game, player_username, player_spawn_x, player_spawn_y);
             enemy = new ENEMY_SHIP(game, enemy_username, enemy_spawn_x, enemy_spawn_y);
+
+            bluehud = game.add.sprite(225, 600, 'bluehud');
+            bluehud.scale.setTo(0.7, 0.7);
+            bluehud.anchor.setTo(0.5, 0.5);
+            bluehud.fixedToCamera = true;
+            
+            player_healthbar = game.add.sprite(189.75, 566.5, 'healthbar');
+            player_healthbar.scale.setTo(0.7, 0.7);
+            player_healthbar.fixedToCamera = true;
+
+            redhud = game.add.sprite(1050, 100, 'redhud');
+            redhud.scale.setTo(0.7, 0.7);
+            redhud.anchor.setTo(0.5, 0.5);
+            redhud.fixedToCamera = true;
+
+            enemy_healthbar = game.add.sprite(1014.75, 66.5, 'healthbar');
+            enemy_healthbar.scale.setTo(0.7, 0.7);
+            enemy_healthbar.fixedToCamera = true;
 
             game.input.keyboard.removeKeyCapture(Phaser.Keyboard.ONE);
             game.input.keyboard.removeKeyCapture(Phaser.Keyboard.TWO);
@@ -463,20 +489,6 @@ function init(){
             weapon_key_heavy = game.input.keyboard.addKey(Phaser.Keyboard.THREE);
             weapon_key_heavy.onDown.add(changeWeaponToHeavy, this);
 
-            weapon_selection_text = game.add.text(50, 50, 'Selected Weapon: Light', {
-                font: "28px Arial", fill: "#ffffff", align: "center" 
-            });
-
-            weapon_selection_text.fixedToCamera = true;
-            weapon_selection_text.cameraOffset.setTo(50, 50);
-
-            weapon_status_text = game.add.text(50, 100, 'Weapon Status: Ready', {
-                font: "28px Arial", fill: "#ffffff", align: "center" 
-            });
-
-            weapon_status_text.fixedToCamera = true;
-            weapon_status_text.cameraOffset.setTo(50, 100);
-
         },
         update: function (){
 
@@ -491,55 +503,93 @@ function init(){
 
             game.physics.arcade.overlap( player_light_bullets_group, enemy.ship, function(tank, bullet){
                 bullet.kill();
+                if(enemy_current_hp - 5 <= 0){
+                    enemy_current_hp = 0;
+                    enemy.destroy();
+                    updateEnemyHealthbar();
+                    socket.emit('newClientHp', { 'hp': enemy_current_hp });
+                }
+                else{
+                    enemy_current_hp -= 5;
+                    updateEnemyHealthbar();
+                    socket.emit('newClientHp', { 'hp': enemy_current_hp });
+                }
             });
 
             game.physics.arcade.overlap( player_heavy_bullets_group, enemy.ship, function(tank, bullet){
                 bullet.kill();
+                if(enemy_current_hp - 10 <= 0){
+                    enemy_current_hp = 0;
+                    enemy.destroy();
+                    updateEnemyHealthbar();
+                    socket.emit('newClientHp', { 'hp': enemy_current_hp });
+                }
+                else{
+                    enemy_current_hp -= 10;
+                    updateEnemyHealthbar();
+                    socket.emit('newClientHp', { 'hp': enemy_current_hp });
+                }
             });
 
             game.physics.arcade.overlap( player_sniper_bullets_group, enemy.ship, function(tank, bullet){
                 bullet.kill();
+                if(enemy_current_hp - 50 <= 0){
+                    enemy_current_hp = 0;
+                    enemy.destroy();
+                    updateEnemyHealthbar();
+                    socket.emit('newClientHp', { 'hp': enemy_current_hp });
+                }
+                else{
+                    enemy_current_hp -= 50;
+                    updateEnemyHealthbar();
+                    socket.emit('newClientHp', { 'hp': enemy_current_hp });
+                }
             });
 
             game.physics.arcade.overlap( enemy_light_bullets_group, player.ship, function(tank, bullet){
                 bullet.kill();
+                if(player_current_hp - 5 <= 0){
+                    player_current_hp = 0;
+                    player.destroy();
+                    updatePlayerHealthbar();
+                    socket.emit('newHostHp', { 'hp': player_current_hp });
+                }
+                else{
+                    player_current_hp -= 5;
+                    updatePlayerHealthbar();
+                    socket.emit('newHostHp', { 'hp': player_current_hp });
+                }
             });
 
             game.physics.arcade.overlap( enemy_heavy_bullets_group, player.ship, function(tank, bullet){
                 bullet.kill();
+                if(player_current_hp - 10 <= 0){
+                    player_current_hp = 0;
+                    player.destroy();
+                    updatePlayerHealthbar();
+                    socket.emit('newHostHp', { 'hp': player_current_hp });
+                }
+                else{
+                    player_current_hp -= 10;
+                    updatePlayerHealthbar();
+                    socket.emit('newHostHp', { 'hp': player_current_hp });
+                }
             });
 
             game.physics.arcade.overlap( enemy_sniper_bullets_group, player.ship, function(tank, bullet){
                 bullet.kill();
+                if(player_current_hp - 50 <= 0){
+                    player_current_hp = 0;
+                    player.destroy();
+                    updatePlayerHealthbar();
+                    socket.emit('newHostHp', { 'hp': player_current_hp });
+                }
+                else{
+                    player_current_hp -= 50;
+                    updatePlayerHealthbar();
+                    socket.emit('newHostHp', { 'hp': player_current_hp });
+                }
             });
-            
-            if(weapon === 'light'){
-                weapon_selection_text.setText('Selected Weapon: Light');
-                if(game.time.now > next_fire_light){
-                    weapon_status_text.setText('Weapon Status: Ready');
-                }
-                else{
-                    weapon_status_text.setText('Weapon Status: Reloading');
-                }
-            }
-            else if(weapon === 'heavy'){
-                weapon_selection_text.setText('Selected Weapon: Heavy');
-                if(game.time.now > next_fire_heavy){
-                    weapon_status_text.setText('Weapon Status: Ready');
-                }
-                else{
-                    weapon_status_text.setText('Weapon Status: Reloading');
-                }
-            }
-            else if(weapon === 'sniper'){
-                weapon_selection_text.setText('Selected Weapon: Sniper');
-                if(game.time.now > next_fire_sniper){
-                    weapon_status_text.setText('Weapon Status: Ready');
-                }
-                else{
-                    weapon_status_text.setText('Weapon Status: Reloading');
-                }
-            }
 
         },
         render: function (){
@@ -624,6 +674,18 @@ function init(){
 
     function changeWeaponToSniper() {
         weapon = 'sniper';
+    }
+
+    function updatePlayerHealthbar(){
+        var hp_percent = player_current_hp / player_hp * 100;
+        var scale_x = hp_percent * 0.7 / 100;
+        player_healthbar.scale.setTo(scale_x, 0.7);
+    }
+
+    function updateEnemyHealthbar(){
+        var hp_percent = enemy_current_hp / enemy_hp * 100;
+        var scale_x = hp_percent * 0.7 / 100;
+        enemy_healthbar.scale.setTo(scale_x, 0.7);
     }
 
     socket.on('newClientInput', function (data) {
