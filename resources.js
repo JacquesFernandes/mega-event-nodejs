@@ -1,3 +1,18 @@
+var request = require("request");
+
+/* MISCELLANEOUS FUNCTIONS */
+
+function MiscFunctions()
+{
+  this.getCookie = function()
+  {
+    console.log(request("/users/getCookie"));
+  };
+}
+
+module.exports.MiscFunctions = MiscFunctions;
+/* PLAYER RELATED STUFF */
+
 function Weapon(dmg, rate, name, level)
 {
   this.level = (level === undefined)? 1 : level ; //level of the gun

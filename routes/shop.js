@@ -5,11 +5,11 @@ module.exports = function()
   var mongoose = require("mongoose");
   var resources = require("../resources");
   var player_class = resources.Player;
-
+  var request = require("request");
   var db_name = "mega_event";
   var transaction_table = "transactions";
   var player_table = "players";
-
+  var mf = resources.MiscFunctions;
   // TODO: SET UP AUTH!!!
 
   //Schemas
@@ -19,23 +19,42 @@ module.exports = function()
     amount: Number
   });
 
-  /*
+  var weaponTypeSchema = mongoose.Schema({
+  level: Number,
+  rate: Number,
+  name: String,
+  dmg: Number
+  });
+  var weaponSchema = mongoose.Schema({
+    light:{
+      type: weaponTypeSchema
+    },
+    heavy:{
+      type: weaponTypeSchema
+    },
+    sniper:{
+      type:weaponTypeSchema
+    }
+  });
   var playerSchema = mongoose.Schema({
-    userid: String,
     username: String,
     hp: Number,
-    movement_speed: Number
+    movement_speed: Number,
     exp: Number,
-    level: Number
+    level: Number,
+    weapons: {
+        type: weaponSchema
+    }
   });
-  */
-  var playerSchema = mongoose.Schema(player_class);
+
+  var playerModel = mongoose.model(player_table,playerSchema);
 
   var transactionModel = mongoose.model(transaction_table,transactionSchema);
 
   router.get("/", function(req, res) // GUI
   { // This method is to render the page
-
+    var cookie = mf.getCookie();
+    console.log("shop/ :"+cookie);
     res.send("Shop root");
   });
 

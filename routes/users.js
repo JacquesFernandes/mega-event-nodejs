@@ -164,11 +164,11 @@ router.get("/getCookie",function(req, res, next)
   if (req.SomeCookie)
   {
     var cookie = req.SomeCookie;
-    res.send(cookie.data);
+    res.send(cookie);
   }
   else
   {
-    res.send("Sorry, no cookie for you....");
+    res.send(false);
   }
 });
 
