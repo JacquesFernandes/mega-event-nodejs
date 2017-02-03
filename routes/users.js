@@ -7,7 +7,7 @@ var db_name = "mega_event";
 var player_table = "players";
 //var session = require("client-sessions");
 
-mongoose.connect("mongodb://localhost/"+db_name);
+//mongoose.connect("mongodb://localhost/"+db_name);
 // Schemas
 /*
 var playerSchema = mongoose.Schema({
