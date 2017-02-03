@@ -83,8 +83,14 @@ gameState.prototype = {
         /**********************************************/
         buttongroup = game.add.group();
         
-        button[0] = game.add.button(200 , 600, 'buttons', actionOnClick, this, 1, 0, 2);
-        button[1] = game.add.button(200 , 800, 'buttons', actionOnClick, this, 1, 0, 2);
+        button[0] = game.add.button(200 , 600, 'buttons', function(){
+            console.log('Redirecting to shop...');
+            location.href += 'shop';
+        }, this, 1, 0, 2);
+        button[1] = game.add.button(200 , 800, 'buttons', function(){
+            console.log('Redirecting to game...');
+            location.href += 'game';
+        }, this, 1, 0, 2);
         
         
         /*button[0].scale.setTo(0.5);
@@ -105,7 +111,8 @@ gameState.prototype = {
 
 };
 function actionOnClick(){
-    console.log('Clicked!');
+    location.href = location.href+'game';
+    /*console.log(location.href);*/
 }
 
 game.state.add('bootState', bootState);
