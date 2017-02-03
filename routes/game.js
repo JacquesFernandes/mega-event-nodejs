@@ -108,7 +108,7 @@ module.exports = function(io){
             io.sockets.emit('playerDisconnection');
             isHostConnected = false;
             isClientConnected = false;
-
+            
         });
 
     });

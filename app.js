@@ -64,7 +64,7 @@ app.use('/bower_components', express.static(path.join(__dirname, 'bower_componen
 /* TODO EDIT ROUTES TO ACTIVATE PATHS */
 app.use('/', index);
 app.use('/users', users);
-app.use("/shop",shop);
+app.use('/shop',shop);
 app.use('/game', game);
 app.use("/lobby/",main_lobby);
 
