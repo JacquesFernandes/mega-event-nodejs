@@ -82,7 +82,14 @@ function init(){
     var bluehud;
     var player_healthbar;
     var enemy_healthbar;
-    var loadout;
+    
+    var loadout_sniper;
+    var loadout_light;
+    var loadout_heavy;
+
+    var isSniperReady = true;
+    var isHeavyReady = true;
+    var isLightReady = true;
 
     var startGame = true;
 
@@ -322,7 +329,10 @@ function init(){
             game.load.spritesheet('player_space_ship', '/assets/spritesheet/shipsheet_1.png', 450, 350, 18);
             game.load.spritesheet('enemy_space_ship', '/assets/spritesheet/shipsheet_2.png', 450, 350, 18);
             game.load.spritesheet('explosion', '/assets/spritesheet/explosion.png', 130, 130, 4);
-            game.load.spritesheet('loadout', '/assets/spritesheet/loadout.png', 400, 500, 8);
+
+            game.load.spritesheet('loadout_heavy', '/assets/spritesheet/loadout_heavy.png', 400, 500, 8);
+            game.load.spritesheet('loadout_sniper', '/assets/spritesheet/loadout_sniper.png', 400, 500, 8);
+            game.load.spritesheet('loadout_light', '/assets/spritesheet/loadout_light.png', 400, 500, 8);
 
         },
         update: function () {
@@ -374,6 +384,24 @@ function init(){
             enemy_healthbar = game.add.sprite(1014.75, 66.5, 'healthbar');
             enemy_healthbar.scale.setTo(0.7, 0.7);
             enemy_healthbar.fixedToCamera = true;
+
+            loadout_sniper = game.add.sprite(1100, 560, 'loadout_sniper');
+            loadout_sniper.anchor.setTo(0.5, 0.5);
+            loadout_sniper.scale.setTo(0.5, 0.5);
+            loadout_sniper.fixedToCamera = true;
+            loadout_sniper.visible = false;
+
+            loadout_light = game.add.sprite(1100, 560, 'loadout_light');
+            loadout_light.anchor.setTo(0.5, 0.5);
+            loadout_light.scale.setTo(0.5, 0.5);
+            loadout_light.fixedToCamera = true;
+            loadout_light.visible = true;
+
+            loadout_heavy = game.add.sprite(1100, 560, 'loadout_heavy');
+            loadout_heavy.anchor.setTo(0.5, 0.5);
+            loadout_heavy.scale.setTo(0.5, 0.5);
+            loadout_heavy.fixedToCamera = true;
+            loadout_heavy.visible = false;
 
             game.input.keyboard.removeKeyCapture(Phaser.Keyboard.ONE);
             game.input.keyboard.removeKeyCapture(Phaser.Keyboard.TWO);
@@ -510,6 +538,124 @@ function init(){
                 player.updateInputInfo(input_info.input_up, input_info.input_left, input_info.input_right);
             }
 
+            if(game.time.now < next_fire_light){
+                isLightReady = false;
+            }
+            else{
+                isLightReady = true;
+            }
+
+            if(game.time.now < next_fire_heavy){
+                isHeavyReady = false;
+            }
+            else{
+                isHeavyReady = true;
+            }
+            
+            if(game.time.now < next_fire_sniper){
+                isSniperReady = false;
+            }
+            else{
+                isSniperReady = true;
+            }
+
+            if(weapon === 'light'){
+
+                loadout_light.visible = true;
+                loadout_heavy.visible = false;
+                loadout_sniper.visible = false;
+
+                if(isLightReady && !isSniperReady && !isHeavyReady){
+                    loadout_light.frame = 4;
+                }
+                if(!isLightReady && isSniperReady && !isHeavyReady){
+                    loadout_light.frame = 2;
+                }
+                if(!isLightReady && !isSniperReady && isHeavyReady){
+                    loadout_light.frame = 3;
+                }
+                if(isLightReady && isSniperReady && !isHeavyReady){
+                    loadout_light.frame = 6;
+                }
+                if(isLightReady && !isSniperReady && isHeavyReady){
+                    loadout_light.frame = 5;
+                }
+                if(!isLightReady && isSniperReady && isHeavyReady){
+                    loadout_light.frame = 7;
+                }
+                if(isLightReady && isSniperReady && isHeavyReady){
+                    loadout_light.frame = 0;
+                }
+                if(!isLightReady && !isSniperReady && !isHeavyReady){
+                    loadout_light.frame = 1;
+                }
+
+            }
+            else if(weapon === 'heavy'){
+
+                loadout_light.visible = false;
+                loadout_heavy.visible = true;
+                loadout_sniper.visible = false;
+
+                if(isLightReady && !isSniperReady && !isHeavyReady){
+                    loadout_heavy.frame = 4;
+                }
+                if(!isLightReady && isSniperReady && !isHeavyReady){
+                    loadout_heavy.frame = 2;
+                }
+                if(!isLightReady && !isSniperReady && isHeavyReady){
+                    loadout_heavy.frame = 3;
+                }
+                if(isLightReady && isSniperReady && !isHeavyReady){
+                    loadout_heavy.frame = 6;
+                }
+                if(isLightReady && !isSniperReady && isHeavyReady){
+                    loadout_heavy.frame = 5;
+                }
+                if(!isLightReady && isSniperReady && isHeavyReady){
+                    loadout_heavy.frame = 7;
+                }
+                if(isLightReady && isSniperReady && isHeavyReady){
+                    loadout_heavy.frame = 0;
+                }
+                if(!isLightReady && !isSniperReady && !isHeavyReady){
+                    loadout_heavy.frame = 1;
+                }
+
+            }
+            else if(weapon === 'sniper'){
+
+                loadout_light.visible = false;
+                loadout_heavy.visible = false;
+                loadout_sniper.visible = true;
+
+                if(isLightReady && !isSniperReady && !isHeavyReady){
+                    loadout_sniper.frame = 4;
+                }
+                if(!isLightReady && isSniperReady && !isHeavyReady){
+                    loadout_sniper.frame = 2;
+                }
+                if(!isLightReady && !isSniperReady && isHeavyReady){
+                    loadout_sniper.frame = 3;
+                }
+                if(isLightReady && isSniperReady && !isHeavyReady){
+                    loadout_sniper.frame = 6;
+                }
+                if(isLightReady && !isSniperReady && isHeavyReady){
+                    loadout_sniper.frame = 5;
+                }
+                if(!isLightReady && isSniperReady && isHeavyReady){
+                    loadout_sniper.frame = 7;
+                }
+                if(isLightReady && isSniperReady && isHeavyReady){
+                    loadout_sniper.frame = 0;
+                }
+                if(!isLightReady && !isSniperReady && !isHeavyReady){
+                    loadout_sniper.frame = 1;
+                }
+
+            }
+            
             socket.emit('clientInput', input_info);
 
         },
