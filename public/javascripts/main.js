@@ -6,6 +6,7 @@ var background;
 var button = [];
 var player;
 var leaderboard;
+var buttonback;
 
 var bootState = function () {
     console.log('Booting phaser...');
@@ -56,7 +57,11 @@ gameState.prototype = {
 
     preload: function () {
 		game.load.image('menubackground', '/assets/images/menubackground.jpg');
-        game.load.spritesheet('buttons', '/assets/images/button2.png', 540, 200);
+        /*game.load.spritesheet('shopbutton', '/assets/sprites/main_buttons_shop.png', 300, 100);
+        game.load.spritesheet('gamebutton', '/assets/sprites/main_buttons_play.png', 300, 100);*/
+        game.load.spritesheet('shopbutton', '/assets/sprites/main_button_shop.png', 345, 70);
+        game.load.spritesheet('gamebutton', '/assets/sprites/main_button_play.png', 345, 70);
+        
     },
     create: function () {
 		background = game.add.sprite(0, 0, 'menubackground');
@@ -81,16 +86,23 @@ gameState.prototype = {
         
         
         /**********************************************/
+        
+        buttonback = game.add.graphics(0,0);
+        buttonback.beginFill(0x000000);
+        buttonback.drawRect(0, 390, 455, 170);
+        buttonback.alpha = 0.7;
+        buttonback.endFill();
+        
         buttongroup = game.add.group();
         
-        button[0] = game.add.button(200 , 600, 'buttons', function(){
+        button[0] = game.add.button(100 , 400, 'shopbutton', function(){
             console.log('Redirecting to shop...');
             location.href += 'shop';
-        }, this, 1, 0, 2);
-        button[1] = game.add.button(200 , 800, 'buttons', function(){
+        }, this, 0, 1, 2);
+        button[1] = game.add.button(100 , 480, 'gamebutton', function(){
             console.log('Redirecting to game...');
             location.href += 'game';
-        }, this, 1, 0, 2);
+        }, this, 0, 1, 2);
         
         
         /*button[0].scale.setTo(0.5);
@@ -99,7 +111,7 @@ gameState.prototype = {
         buttongroup.add(button[0]);
         buttongroup.add(button[1]);
         
-        buttongroup.scale.setTo(0.5);
+        buttongroup.scale.setTo(1);
         /*********************************************/
     },
     update: function (){
