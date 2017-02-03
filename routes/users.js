@@ -5,6 +5,7 @@ var resources = require("../resources");
 var Player = resources.Player;
 var db_name = "mega_event";
 var player_table = "players";
+//var session = require("client-sessions");
 
 mongoose.connect("mongodb://localhost/"+db_name);
 // Schemas
@@ -157,6 +158,29 @@ router.post("/newPlayer/:name/:id", function(req,res) // Disable afterwards ?
   player_instance.save();
 
   res.status(200).send(player.toJSON());
+});
+
+router.get("/getCookie",function(req, res, next)
+{
+  if (req.SomeCookie)
+  {
+    var cookie = req.SomeCookie;
+    res.send(cookie.data);
+  }
+  else
+  {
+    res.send("Sorry, no cookie for you....");
+  }
+});
+
+router.get("/setCookie",function(req, res)
+{
+  console.log("REACHED");
+  req.SomeCookie.status = true;
+  console.log("cookie should be set: "+req.SomeCookie);
+  //console.log(req.SomeCookie);
+  res.send(req.SomeCookie);
+  res.end();
 });
 
 module.exports = router;
