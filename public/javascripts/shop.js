@@ -57,7 +57,7 @@ var shopState = function () {
 shopState.prototype = {
 
     preload: function () {
-		game.load.image('ship', '/assets/images/ship.png');
+		game.load.image('ship', '/assets/sprites/ship.png');
         game.load.image('sidebar', '/assets/images/shopback.jpeg');
         game.load.spritesheet('lightbutton', '/assets/sprites/tier_button_light.png', 300, 100);
         game.load.spritesheet('heavybutton', '/assets/sprites/tier_button_heavy.png', 300, 100);
@@ -73,7 +73,7 @@ shopState.prototype = {
         sidebar.scale.setTo(1.4);
         /*Global anchor point*/
         ship.anchor.setTo(0.5);
-        ship.scale.setTo(0.5,0.5); //Scaling images in phaser
+        ship.scale.setTo(1); //Scaling images in phaser
         
         //Title Shop
         var heading = game.add.text(game.world.centerX*3/2,50, 'Customization', {font: '30px Georgia', fill: '#fff'});
@@ -89,45 +89,129 @@ shopState.prototype = {
         //Tier 0
         button[0] = game.add.button(game.world.centerX *2 + 200, 350, 'lightbutton', function(){
             console.log('Tier 0 light');
+            $.post('/t0/light',{
+                tier: 't0',
+                class: 'light'
+            }, 
+            function(data, status){
+                //Callback function
+            });
         }, this, 1, 0, 2);
         button[1] = game.add.button(game.world.centerX *2 + 500 , 350, 'heavybutton', function(){
             console.log('Tier 0 heavy');
+            $.post('/t0/heavy',{
+                tier: 't0',
+                class: 'heavy'
+            }, 
+            function(data, status){
+                //Callback function
+            });
         }, this, 1, 0, 2);
         button[2] = game.add.button(game.world.centerX *2 + 800 , 350, 'sniperbutton', function(){
             console.log('Tier 0 sniper');
+            $.post('/t0/sniper',{
+                tier: 't0',
+                class: 'sniper'
+            }, 
+            function(data, status){
+                //Callback function
+            });
         }, this, 1, 0, 2);
         
         //Tier 1
         button[3] = game.add.button(game.world.centerX *2 + 200, 550, 'lightbutton', function(){
             console.log('Tier 1 light');
+            $.post('/t0/light',{
+                tier: 't0',
+                class: 'light'
+            }, 
+            function(data, status){
+                //Callback function
+            });
         }, this, 1, 0, 2);
         button[4] = game.add.button(game.world.centerX *2 + 500 , 550, 'heavybutton', function(){
             console.log('Tier 1 heavy');
+            $.post('/t0/heavy',{
+                tier: 't0',
+                class: 'heavy'
+            }, 
+            function(data, status){
+                //Callback function
+            });
         }, this, 1, 0, 2);
         button[5] = game.add.button(game.world.centerX *2 + 800 , 550, 'sniperbutton', function(){
             console.log('Tier 1 sniper');
+            $.post('/t0/sniper',{
+                tier: 't0',
+                class: 'sniper'
+            }, 
+            function(data, status){
+                //Callback function
+            });
         }, this, 1, 0, 2);
         
         //Tier 2
         button[6] = game.add.button(game.world.centerX *2 + 200, 750, 'lightbutton', function(){
             console.log('Tier 2 light');
+            $.post('/t0/light',{
+                tier: 't0',
+                class: 'light'
+            }, 
+            function(data, status){
+                //Callback function
+            });
         }, this, 1, 0, 2);
         button[7] = game.add.button(game.world.centerX *2 + 500 , 750, 'heavybutton', function(){
             console.log('Tier 2 heavy');
+            $.post('/t0/heavy',{
+                tier: 't0',
+                class: 'heavy'
+            }, 
+            function(data, status){
+                //Callback function
+            });
         }, this, 1, 0, 2);
         button[8] = game.add.button(game.world.centerX *2 + 800 , 750, 'sniperbutton', function(){
             console.log('Tier 2 sniper');
+            $.post('/t0/sniper',{
+                tier: 't0',
+                class: 'sniper'
+            }, 
+            function(data, status){
+                //Callback function
+            });
         }, this, 1, 0, 2);
         
         //Tier 3
         button[9] = game.add.button(game.world.centerX *2 + 200, 950, 'lightbutton', function(){
             console.log('Tier 3 light');
+            $.post('/t0/light',{
+                tier: 't0',
+                class: 'light'
+            }, 
+            function(data, status){
+                //Callback function
+            });
         }, this, 1, 0, 2);
         button[10] = game.add.button(game.world.centerX *2 + 500 , 950, 'heavybutton', function(){
             console.log('Tier 3 heavy');
+            $.post('/t0/heavy',{
+                tier: 't0',
+                class: 'heavy'
+            }, 
+            function(data, status){
+                //Callback function
+            });
         }, this, 1, 0, 2);
         button[11] = game.add.button(game.world.centerX *2 + 800 , 950, 'sniperbutton', function(){
             console.log('Tier 3 sniper');
+            $.post('/t0/sniper',{
+                tier: 't0',
+                class: 'sniper'
+            }, 
+            function(data, status){
+                //Callback function
+            });
         }, this, 1, 0, 2);
         
         
@@ -154,7 +238,7 @@ shopState.prototype = {
         
     },
     update: function (){
-		ship.angle -= 0.2;
+		/*ship.angle -= 0.2;*/
     },
     render: function (){
 
