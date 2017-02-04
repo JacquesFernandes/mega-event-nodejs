@@ -246,37 +246,6 @@ shopState.prototype = {
 
 };
 
-function ajaxFunction(){
-    try{
-            ajaxRequest = new XMLHttpRequest();
-    } 
-    catch (e){
-        try{
-            ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
-        } 
-        catch (e) {
-            try{
-                ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-            catch (e){
-                // Something went wrong
-                alert("Your browser broke!");
-                return false;
-            }
-        }
-    }
-}
-function loadDoc(){
-    ajaxFunction();
-    ajaxRequest.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("demo").innerHTML =this.responseText;
-        }
-    };
-    xhttp.open("GET", "ajax_info.txt", true);
-    xhttp.send();
-}
-
 
 
 game.state.add('bootState', bootState);
