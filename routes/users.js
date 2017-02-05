@@ -5,8 +5,8 @@ var resources = require("../resources");
 var Player = resources.Player;
 var db_name = "mega_event";
 var player_table = "players";
-//var session = require("client-sessions");
-
+var schemas = require("../Schemas");
+var playerModel = schemas.PlayerModel;
 //mongoose.connect("mongodb://localhost/"+db_name);
 // Schemas
 /*
@@ -19,7 +19,7 @@ var playerSchema = mongoose.Schema({
   level: Number
 });
 */
-
+/*
 var weaponTypeSchema = mongoose.Schema({
   level: Number,
   rate: Number,
@@ -49,7 +49,7 @@ var playerSchema = mongoose.Schema({
 });
 
 var playerModel = mongoose.model(player_table,playerSchema);
-
+*/
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
@@ -146,17 +146,17 @@ router.get("/getFightInfo/:name",function(req,res) // done
   });
 });
 
-router.post("/newPlayer/:name/:id", function(req,res) // Disable afterwards ?
+router.post("/newPlayer/:name", function(req,res) // Disable afterwards ?
 {
   var name = req.params.name;
-  var id = req.params.id;
-
-  var player = new Player(id,name);
+  //var id = req.params.id;
+  console.log("creating a new player "+name);
+  var player = new Player(name);
   console.log(player.toJSON());
   var player_instance = new playerModel(player.toJSON());
   player_instance.save();
 
-  res.status(200).send(player.toJSON());
+  res.send(player.toJSON());
 });
 
 router.get("/getCookie",function(req, res, next)
@@ -172,14 +172,18 @@ router.get("/getCookie",function(req, res, next)
   }
 });
 
-router.get("/setCookie",function(req, res)
+router.get("/setCookie",function(req, res) // TODO : Work on this afterwards; fetch data and set it.
 {
-  console.log("REACHED");
-  req.SomeCookie.status = true;
-  console.log("cookie should be set: "+req.SomeCookie);
+  //console.log("REACHED");
+  req.sess.username = "Mega";
+  console.log("cookie should be set for: "+req.sess.username);
   //console.log(req.SomeCookie);
-  res.send(req.SomeCookie);
-  res.end();
+  res.redirect("/shop");
+
+  //PRODUCTION
+  //res.redirect("http://teknack.in/login");
 });
 
 module.exports = router;
+
+
