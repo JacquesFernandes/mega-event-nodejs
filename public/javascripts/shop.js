@@ -64,6 +64,8 @@ shopState.prototype = {
         game.load.spritesheet('sniperbutton', '/assets/sprites/tier_button_sniper.png', 300, 100);
     },
     create: function () {
+        game.stage.backgroundColor = '#000033';
+        
 		/*background = game.add.sprite(0,0,'background');*/
         sidebar = game.add.sprite(game.world.centerX*1.5,game.world.centerY,'sidebar')
         ship = game.add.sprite(game.world.centerX/2,game.world.centerY,'ship');
