@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require("client-sessions");
+var mongoose = require("mongoose");
 
 /* TODO Include route objects below */
 //var index = require('./routes/index');
@@ -34,13 +35,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(session({           // Get back to this at some point
-  cookieName: "SomeCookie",
+app.use(session({           // TODO : REMOVE DURING PRODUCTION!
+  cookieName: "sess",
   secret: "aslkdjalskdjad",
   duration: 24 * 60 * 60 * 1000,
-  activeDuration: 1000 * 60 * 5
+  activeDuration: 1000 * 60 * 5,
+  username: "Mega"
 }));
-
 app.use("/checkCookie",function(req,res,next)
 {
   if (!req.SomeCookie.status)
@@ -104,5 +105,13 @@ app.use(function(err, req, res, next) {
 	res.status(err.status || 500);
 	res.render('error');
 });
+
+/* DB Details, change when deploying */
+var db_username = "";
+var db_password = "";
+var db_name = "mega-event";
+var auth_connect_string = "mongodb://"+db_username+":"+db_password+"@localhost/"+db_name;
+var connect_string = "mongodb://localhost/"+db_name;
+mongoose.connect(connect_string);
 
 module.exports = { app: app, server: server };
