@@ -19,6 +19,7 @@ function Weapon(dmg, rate, name, level)
   this.dmg = (dmg === undefined)? 1 : dmg ; // damage per hit
   this.rate = (rate === undefined)? 1 : rate; // Rate of fire
   this.name = (name === undefined)? "Some Gun" : name; // Name of Gun
+  this.unlocked = [true,false,false,false]; // according to tiers : [t0, t1, t2, t3]
 };
 
 function Player(player_name)

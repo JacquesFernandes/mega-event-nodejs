@@ -151,10 +151,14 @@ router.get("/purchase/:tier/:weapon_class",function(req,res)
 
     //console.log(player);
     
-    //fetch points
-    //check points
-    //deduct points
-
+    var unlocked_status = player.get("weapons").get(weapon_class).get("unlocked")[Number(tier.split("").pop())]; //checks if current level has weapon unlocked
+    if (!unlocked_status) // if not unlocked, run transaction
+    { 
+      //fetch points
+      //check points
+      //deduct points
+      console.log("purchasing!"); // check why booloean isn't showing up in consolelog
+    }
 
     //update player DONE
     var tiers_layout = getTiers();
@@ -166,7 +170,7 @@ router.get("/purchase/:tier/:weapon_class",function(req,res)
       var new_hp = tiers_layout[tier]["HP"]; // update base hp
     }
     new_hp += tiers_layout[tier]["bonus_hp"]; // increment hp with bonus hp, if any
-    player.set("hp",net_hp);
+    player.set("hp",new_hp);
 
     var new_weapon_config = tiers_layout[tier][weapon_class];
     player.get("weapons").get(weapon_class).set("level",given_level); // set new level for selected weapon
