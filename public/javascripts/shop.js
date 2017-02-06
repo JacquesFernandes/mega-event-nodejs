@@ -91,7 +91,7 @@ shopState.prototype = {
         //Tier 0
         button[0] = game.add.button(game.world.centerX *2 + 200, 350, 'lightbutton', function(){
             console.log('Tier 0 light');
-            $.post('/t0/light',{
+            $.post('shop/t0/light',{
                 tier: 't0',
                 class: 'light'
             }, 
@@ -101,7 +101,7 @@ shopState.prototype = {
         }, this, 1, 0, 2);
         button[1] = game.add.button(game.world.centerX *2 + 500 , 350, 'heavybutton', function(){
             console.log('Tier 0 heavy');
-            $.post('/t0/heavy',{
+            $.post('shop/t0/heavy',{
                 tier: 't0',
                 class: 'heavy'
             }, 
@@ -111,7 +111,7 @@ shopState.prototype = {
         }, this, 1, 0, 2);
         button[2] = game.add.button(game.world.centerX *2 + 800 , 350, 'sniperbutton', function(){
             console.log('Tier 0 sniper');
-            $.post('/t0/sniper',{
+            $.post('shop/t0/sniper',{
                 tier: 't0',
                 class: 'sniper'
             }, 
@@ -123,8 +123,8 @@ shopState.prototype = {
         //Tier 1
         button[3] = game.add.button(game.world.centerX *2 + 200, 550, 'lightbutton', function(){
             console.log('Tier 1 light');
-            $.post('/t0/light',{
-                tier: 't0',
+            $.post('shop/t1/light',{
+                tier: 't1',
                 class: 'light'
             }, 
             function(data, status){
@@ -133,8 +133,8 @@ shopState.prototype = {
         }, this, 1, 0, 2);
         button[4] = game.add.button(game.world.centerX *2 + 500 , 550, 'heavybutton', function(){
             console.log('Tier 1 heavy');
-            $.post('/t0/heavy',{
-                tier: 't0',
+            $.post('shop/t1/heavy',{
+                tier: 't1',
                 class: 'heavy'
             }, 
             function(data, status){
@@ -143,8 +143,8 @@ shopState.prototype = {
         }, this, 1, 0, 2);
         button[5] = game.add.button(game.world.centerX *2 + 800 , 550, 'sniperbutton', function(){
             console.log('Tier 1 sniper');
-            $.post('/t0/sniper',{
-                tier: 't0',
+            $.post('shop/t1/sniper',{
+                tier: 't1',
                 class: 'sniper'
             }, 
             function(data, status){
@@ -155,8 +155,8 @@ shopState.prototype = {
         //Tier 2
         button[6] = game.add.button(game.world.centerX *2 + 200, 750, 'lightbutton', function(){
             console.log('Tier 2 light');
-            $.post('/t0/light',{
-                tier: 't0',
+            $.post('shop/t2/light',{
+                tier: 't2',
                 class: 'light'
             }, 
             function(data, status){
@@ -165,8 +165,8 @@ shopState.prototype = {
         }, this, 1, 0, 2);
         button[7] = game.add.button(game.world.centerX *2 + 500 , 750, 'heavybutton', function(){
             console.log('Tier 2 heavy');
-            $.post('/t0/heavy',{
-                tier: 't0',
+            $.post('shop/t2/heavy',{
+                tier: 't2',
                 class: 'heavy'
             }, 
             function(data, status){
@@ -175,8 +175,8 @@ shopState.prototype = {
         }, this, 1, 0, 2);
         button[8] = game.add.button(game.world.centerX *2 + 800 , 750, 'sniperbutton', function(){
             console.log('Tier 2 sniper');
-            $.post('/t0/sniper',{
-                tier: 't0',
+            $.post('shop/t2/sniper',{
+                tier: 't2',
                 class: 'sniper'
             }, 
             function(data, status){
@@ -187,8 +187,8 @@ shopState.prototype = {
         //Tier 3
         button[9] = game.add.button(game.world.centerX *2 + 200, 950, 'lightbutton', function(){
             console.log('Tier 3 light');
-            $.post('/t0/light',{
-                tier: 't0',
+            $.post('shop/t3/light',{
+                tier: 't3',
                 class: 'light'
             }, 
             function(data, status){
@@ -197,8 +197,8 @@ shopState.prototype = {
         }, this, 1, 0, 2);
         button[10] = game.add.button(game.world.centerX *2 + 500 , 950, 'heavybutton', function(){
             console.log('Tier 3 heavy');
-            $.post('/t0/heavy',{
-                tier: 't0',
+            $.post('shop/t3/heavy',{
+                tier: 't3',
                 class: 'heavy'
             }, 
             function(data, status){
@@ -207,8 +207,8 @@ shopState.prototype = {
         }, this, 1, 0, 2);
         button[11] = game.add.button(game.world.centerX *2 + 800 , 950, 'sniperbutton', function(){
             console.log('Tier 3 sniper');
-            $.post('/t0/sniper',{
-                tier: 't0',
+            $.post('shop/t3/sniper',{
+                tier: 't3',
                 class: 'sniper'
             }, 
             function(data, status){
