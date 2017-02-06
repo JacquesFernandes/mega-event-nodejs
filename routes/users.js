@@ -152,11 +152,12 @@ router.post("/newPlayer/:name", function(req,res) // Disable afterwards ?
   //var id = req.params.id;
   console.log("creating a new player "+name);
   var player = new Player(name);
-  console.log(player.toJSON());
+  //console.log(player);
   var player_instance = new playerModel(player.toJSON());
+  console.log(player_instance);
   player_instance.save();
 
-  res.send(player.toJSON());
+  res.send(player_instance);
 });
 
 router.get("/getCookie",function(req, res, next)
@@ -175,7 +176,8 @@ router.get("/getCookie",function(req, res, next)
 router.get("/setCookie",function(req, res) // TODO : Work on this afterwards; fetch data and set it.
 {
   //console.log("REACHED");
-  req.sess.username = "Mega";
+  req.sess.username = "Sidwa";
+  //req.sess.status = true;
   console.log("cookie should be set for: "+req.sess.username);
   //console.log(req.SomeCookie);
   res.redirect("/shop");

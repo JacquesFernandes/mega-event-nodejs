@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require("mongoose");
 var request = require("request");
+var resources = require("../resources");
+var Player = resources.Player;
 var schemas = require("../Schemas");
 var weaponTypeSchema = schemas.weaponTypeSchema;
 var weaponSchema = schemas.weaponSchema;
@@ -106,7 +108,7 @@ router.get('/', function (req, res, next)
   res.render('shop');
 });
 
-router.get("/purchase/:tier/:weapon_class",function(req,res)
+router.post("/purchase/:tier/:weapon_class",function(req,res)
 {
   if (!req.sess.username)
   {
@@ -118,21 +120,14 @@ router.get("/purchase/:tier/:weapon_class",function(req,res)
   PlayerModel.findOne({username:req.sess.username}, function(err,player)
   {
     
+    if (err)
+    {
+      console.log(err);
+    }
+
     if (player === null || player === undefined)
     {
-      console.log("Couldn't find "+req.sess.username+" in database...");
-      console.log("Creating a new player...");
-      var url = "http://127.0.0.1:3000/users/newPlayer/"+req.sess.username+"";
-      console.log("using: "+url);
-      request({uri:url, method:"POST"},function(err,resp,body)
-      {
-        if (err)
-        {
-          console.log(err);
-          res.send("Something went wrong with fetching player info in shop.js! 0.0");
-          return;
-        }
-      });
+      player = makeNewPlayer(req.sess.username);
     }
 
     var tier = req.params.tier; // "t1" | "t2" | "t3" :: "t0" is all available by default
@@ -149,27 +144,22 @@ router.get("/purchase/:tier/:weapon_class",function(req,res)
       return;
     }
 
-    //console.log(player);
-    
     var unlocked_status = player.get("weapons").get(weapon_class).get("unlocked")[Number(tier.split("").pop())]; //checks if current level has weapon unlocked
-    if (!unlocked_status) // if not unlocked, run transaction
+    
+    if (!unlocked_status) // TODO: USE SID'S API HERE // if not unlocked, run transaction
     { 
       //fetch points
       //check points
       //deduct points
-      console.log("purchasing!"); // check why booloean isn't showing up in consolelog
+      console.log("purchasing!");
     }
 
     //update player DONE
     var tiers_layout = getTiers();
     var given_level = tier.split("").pop();
-    var new_hp = player.get("hp");
-    if (given_level > player.get("level"))
-    {
-      player.set("level",given_level); // set new level
-      var new_hp = tiers_layout[tier]["HP"]; // update base hp
-    }
-    new_hp += tiers_layout[tier]["bonus_hp"]; // increment hp with bonus hp, if any
+    // TODO : Consider reworking the way the hp is calculated... take highest?
+    var new_hp = Number(tiers_layout[tier]["HP"]) + Number(tiers_layout[tier][weapon_class]["bonus_hp"]);
+    //new_hp += Number(new_hp) + Number(tiers_layout[tier][weapon_class]["bonus_hp"]); // increment hp with bonus hp, if any
     player.set("hp",new_hp);
 
     var new_weapon_config = tiers_layout[tier][weapon_class];
@@ -178,9 +168,34 @@ router.get("/purchase/:tier/:weapon_class",function(req,res)
     player.get("weapons").get(weapon_class).set("rate",new_weapon_config.fire_rate); // set new firing rate
     
     console.log(player);
+    player.save();
     res.send("Done :D");
   });
 
 });
 
 module.exports = router;
+
+/* SUPPORT FUNCTIONS */
+var makeNewPlayer = function(username)
+{
+  console.log("Couldn't find "+username+" in database...");
+  console.log("Creating a new player...");
+
+  var name = username;
+  //var id = req.params.id;
+  console.log("creating a new player "+name);
+  var player = new Player(name);
+  //console.log(player);
+  var player_instance = new PlayerModel(player.toJSON());
+  //console.log(player_instance);
+  player_instance.save(function(err)
+  {
+    console.log(player_instance)
+    console.log(err);
+
+  });
+  return(player_instance);
+
+  
+};

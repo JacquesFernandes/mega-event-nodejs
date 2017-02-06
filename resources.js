@@ -48,19 +48,22 @@ function Player(player_name)
         level: Number,
         rate: Number,
         name: String,
-        dmg: Number
+        dmg: Number,
+        unlocked: [Boolean]
       },
       heavy: {
         level: Number,
         rate: Number,
         name: String,
-        dmg: Number
+        dmg: Number,
+        unlocked: [Boolean]
       },
       sniper: {
         level: Number,
         rate: Number,
         name: String,
-        dmg: Number
+        dmg: Number,
+        unlocked: [Boolean]
       }
     }
   };
@@ -79,19 +82,22 @@ function Player(player_name)
           level: this.weapons.light.level,
           rate: this.weapons.light.rate,
           name: this.weapons.light.name,
-          dmg: this.weapons.light.dmg
+          dmg: this.weapons.light.dmg,
+          unlocked: this.weapons.light.unlocked
         },
         heavy: {
           level: this.weapons.heavy.level,
           rate: this.weapons.heavy.rate,
           name: this.weapons.heavy.name,
-          dmg: this.weapons.heavy.dmg
+          dmg: this.weapons.heavy.dmg,
+          unlocked: this.weapons.heavy.unlocked
         },
         sniper: {
           level: this.weapons.sniper.level,
           rate: this.weapons.sniper.rate,
           name: this.weapons.sniper.name,
-          dmg: this.weapons.sniper.dmg
+          dmg: this.weapons.sniper.dmg,
+          unlocked: this.weapons.sniper.unlocked
         }
       }
     };
