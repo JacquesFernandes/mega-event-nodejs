@@ -8,47 +8,6 @@ var weaponSchema = schemas.weaponSchema;
 var playerSchema = schemas.playerSchema;
 var PlayerModel = schemas.PlayerModel;
 
-// module.exports = function()
-// {
-//   var express = require("express");
-//   var router = express.Router();
-//   var mongoose = require("mongoose");
-//   var resources = require("../resources");
-//   var player_class = resources.Player;
-
-//   var db_name = "mega_event";
-//   var transaction_table = "transactions";
-//   var player_table = "players";
-
-//   // TODO: SET UP AUTH!!!
-
-//   //Schemas
-//   var transactionSchema = mongoose.Schema({
-//     time: Date,
-//     userid: String,
-//     amount: Number
-//   });
-
-//   /*
-//   var playerSchema = mongoose.Schema({
-//     userid: String,
-//     username: String,
-//     hp: Number,
-//     movement_speed: Number
-//     exp: Number,
-//     level: Number
-//   });
-//   */
-//   var playerSchema = mongoose.Schema(player_class);
-
-//   var transactionModel = mongoose.model(transaction_table,transactionSchema);
-
-//   router.get("/", function(req, res) // GUI
-//   { // This method is to render the page
-
-//     res.send("Shop root");
-//   });
-
 
    /*** APIs ***/
 router.get("/getTiers", function(req,res)
@@ -56,44 +15,6 @@ router.get("/getTiers", function(req,res)
   tiers = getTiers();
   res.send(tiers);
 });
-
-
-
-   /*** Supplementary methods ***/
-function getTiers()
-{
-/*
-^^ -> +20
-^  -> +10
-*/
-  tiers = {
-    "t0":{
-      "HP": 100,
-      "light":{"dmg": "10", "fire_rate": "10", "bonus_hp": "0"},
-      "heavy":{"dmg": "20", "fire_rate": "5", "bonus_hp": "20"},
-      "sniper":{"dmg": "30", "fire_rate": "1", "bonus_hp": "10"}
-    },
-    "t1":{
-      "HP": 120,
-      "light":{"dmg": "10", "fire_rate": "20", "bonus_hp": "0"},
-      "heavy":{"dmg": "30", "fire_rate": "15", "bonus_hp": "20"},
-      "sniper":{"dmg": "50", "fire_rate": "1", "bonus_hp": "10"}
-    },
-    "t2":{
-      "HP": 130,
-      "light":{"dmg": "10", "fire_rate": "30", "bonus_hp": "0"},
-      "heavy":{"dmg": "40", "fire_rate": "25", "bonus_hp": "20"},
-      "sniper":{"dmg": "70", "fire_rate": "1", "bonus_hp": "10"}
-    },
-    "t3":{
-      "HP":140,
-      "light":{"dmg": "10", "fire_rate": "40", "bonus_hp": "0"},
-      "heavy":{"dmg": "50", "fire_rate": "35", "bonus_hp": "20"},
-      "sniper":{ "dmg": "90", "fire_rate": "1", "bonus_hp": "10"}
-    }
-  };
-  return(tiers);
-}
 
 router.get('/', function (req, res, next)
 {
@@ -104,6 +25,33 @@ router.get('/', function (req, res, next)
   }
 
   res.render('shop');
+});
+
+router.get("/unlocked",function(req,res)
+{
+  /*
+   * Tier 0: 00 01 02
+   * Tier 1: 03 04 05
+   * Tier 2: 06 07 08
+   * Tier 3: 09 10 11
+   */
+
+  if (!req.sess.username)
+  {
+    res.redirect("/users/setCookie");
+    return;
+  }
+
+  PlayerModel.findOne({username:req.sess.username}, function(err, player)
+  {
+    if (err)
+    {
+      console.log("ERROR FROM shop.js/unlocked -> PlayerModel.findOne");
+      console.log(err);
+    }
+
+    //get tier 0 unlocks
+  });
 });
 
 router.get("/purchase/:tier/:weapon_class",function(req,res)
@@ -180,3 +128,39 @@ router.get("/purchase/:tier/:weapon_class",function(req,res)
 });
 
 module.exports = router;
+
+/*** SUPPLEMENTARY FUNCTIONS ***/
+function getTiers()
+{
+/*
+^^ -> +20
+^  -> +10
+*/
+  tiers = {
+    "t0":{
+      "HP": 100,
+      "light":{"dmg": "10", "fire_rate": "10", "bonus_hp": "0"},
+      "heavy":{"dmg": "20", "fire_rate": "5", "bonus_hp": "20"},
+      "sniper":{"dmg": "30", "fire_rate": "1", "bonus_hp": "10"}
+    },
+    "t1":{
+      "HP": 120,
+      "light":{"dmg": "10", "fire_rate": "20", "bonus_hp": "0"},
+      "heavy":{"dmg": "30", "fire_rate": "15", "bonus_hp": "20"},
+      "sniper":{"dmg": "50", "fire_rate": "1", "bonus_hp": "10"}
+    },
+    "t2":{
+      "HP": 130,
+      "light":{"dmg": "10", "fire_rate": "30", "bonus_hp": "0"},
+      "heavy":{"dmg": "40", "fire_rate": "25", "bonus_hp": "20"},
+      "sniper":{"dmg": "70", "fire_rate": "1", "bonus_hp": "10"}
+    },
+    "t3":{
+      "HP":140,
+      "light":{"dmg": "10", "fire_rate": "40", "bonus_hp": "0"},
+      "heavy":{"dmg": "50", "fire_rate": "35", "bonus_hp": "20"},
+      "sniper":{ "dmg": "90", "fire_rate": "1", "bonus_hp": "10"}
+    }
+  };
+  return(tiers);
+}
