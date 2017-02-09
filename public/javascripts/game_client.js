@@ -69,7 +69,19 @@ function init(){
     var weapon_key_light;
     var weapon_key_sniper;
     var weapon_key_one_heavy;
+    var weapon_shoot_key;
 
+    var towersprite;
+
+    var player_tower_health = 1000;
+    var enemy_tower_health = 1000;
+
+    var isPlayerAlive = true;
+    var isEnemyAlive = true;
+
+    var player_next_respawn_time = 0;
+    var enemy_next_respawn_time = 0;
+    
     var fire_rate_light = 500;
     var fire_rate_heavy = 1500;
     var fire_rate_sniper = 3000; 
@@ -90,6 +102,11 @@ function init(){
     var isSniperReady = true;
     var isHeavyReady = true;
     var isLightReady = true;
+
+    var backgound_music;
+    var sniper_shoot_music;
+    var heavy_shoot_music;
+    var light_shoot_music;
 
     var startGame = true;
 
@@ -334,6 +351,11 @@ function init(){
             game.load.spritesheet('loadout_sniper', '/assets/spritesheet/loadout_sniper.png', 400, 500, 8);
             game.load.spritesheet('loadout_light', '/assets/spritesheet/loadout_light.png', 400, 500, 8);
 
+            game.load.audio('background_music', 'assets/audio/background.mp3');
+            game.load.audio('sniper_shoot_music', 'assets/audio/sniper.mp3');
+            game.load.audio('heavy_shoot_music', 'assets/audio/heavy.mp3');
+            game.load.audio('light_shoot_music', 'assets/audio/light.mp3');
+
         },
         update: function () {
 
@@ -416,6 +438,8 @@ function init(){
             game.input.keyboard.removeKeyCapture(Phaser.Keyboard.LEFT);
             game.input.keyboard.removeKeyCapture(Phaser.Keyboard.RIGHT);
 
+            game.input.keyboard.removeKeyCapture(Phaser.Keyboard.SPACEBAR);
+
             player_light_bullets_group = game.add.group();
             player_light_bullets_group.enableBody = true;
             player_light_bullets_group.physicsBodyType = Phaser.Physics.ARCADE;
@@ -465,8 +489,6 @@ function init(){
             enemy_sniper_bullets_group.setAll('checkWorldBounds', true);
             enemy_sniper_bullets_group.setAll('outOfBoundsKill', true);
 
-            game.input.onDown.add(fireBullet, this);
-
             weapon_key_light = game.input.keyboard.addKey(Phaser.Keyboard.ONE);
             weapon_key_light.onDown.add(changeWeaponToLight, this);
 
@@ -475,6 +497,18 @@ function init(){
 
             weapon_key_heavy = game.input.keyboard.addKey(Phaser.Keyboard.THREE);
             weapon_key_heavy.onDown.add(changeWeaponToHeavy, this);
+
+            weapon_shoot_key = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+            weapon_shoot_key.onDown.add(fireBullet, this);
+
+            background_music = game.add.audio('background_music');
+
+            sniper_shoot_music = game.add.audio('sniper_shoot_music');
+            heavy_shoot_music = game.add.audio('heavy_shoot_music');
+            light_shoot_music = game.add.audio('light_shoot_music');
+
+            background_music.onStop.add(repeatBackground, this);
+            background_music.play();
 
         },
         update: function (){
@@ -681,6 +715,8 @@ function init(){
                 bullet2.reset(player.weapon_point_light_down.world.x, player.weapon_point_light_down.world.y);
                 bullet2.angle = player.ship.angle;
 
+                light_shoot_music.play();
+
                 game.physics.arcade.moveToXY(bullet1, player.shoot_path_light_up_point.world.x, player.shoot_path_light_up_point.world.y, 500);
                 game.physics.arcade.moveToXY(bullet2, player.shoot_path_light_down_point.world.x, player.shoot_path_light_down_point.world.y, 500);
 
@@ -703,6 +739,8 @@ function init(){
                 bullet2.reset(player.weapon_point_heavy_down.world.x, player.weapon_point_heavy_down.world.y);
                 bullet2.angle = player.ship.angle;
 
+                heavy_shoot_music.play();
+
                 game.physics.arcade.moveToXY(bullet1, player.shoot_path_heavy_up_point.world.x, player.shoot_path_heavy_up_point.world.y, 550);
                 game.physics.arcade.moveToXY(bullet2, player.shoot_path_heavy_down_point.world.x, player.shoot_path_heavy_down_point.world.y, 550);
 
@@ -720,6 +758,8 @@ function init(){
                 var bullet = player_sniper_bullets_group.getFirstDead();
                 bullet.reset(player.weapon_point_sniper.world.x, player.weapon_point_sniper.world.y);
                 bullet.angle = player.ship.angle;
+
+                sniper_shoot_music.play();
 
                 game.physics.arcade.moveToXY(bullet, player.shoot_path_sniper_point.world.x, player.shoot_path_sniper_point.world.y, 600);
 
@@ -755,6 +795,10 @@ function init(){
         enemy_healthbar.scale.setTo(scale_x, 0.7);
     }
 
+    function repeatBackground(){
+        background_music.play();
+    }
+
     socket.on('newPlayerPositionData', function(data){
 
         player_currentX = data.client.x;
@@ -781,6 +825,8 @@ function init(){
             bullet2.reset(enemy.weapon_point_light_down.world.x, enemy.weapon_point_light_down.world.y);
             bullet2.angle = enemy.ship.angle;
 
+            light_shoot_music.play();
+
             game.physics.arcade.moveToXY(bullet1, enemy.shoot_path_light_up_point.world.x, enemy.shoot_path_light_up_point.world.y, 500);
             game.physics.arcade.moveToXY(bullet2, enemy.shoot_path_light_down_point.world.x, enemy.shoot_path_light_down_point.world.y, 500);
         
@@ -795,6 +841,8 @@ function init(){
             bullet2.reset(enemy.weapon_point_heavy_down.world.x, enemy.weapon_point_heavy_down.world.y);
             bullet2.angle = enemy.ship.angle;
 
+            heavy_shoot_music.play();
+
             game.physics.arcade.moveToXY(bullet1, enemy.shoot_path_heavy_up_point.world.x, enemy.shoot_path_heavy_up_point.world.y, 550);
             game.physics.arcade.moveToXY(bullet2, enemy.shoot_path_heavy_down_point.world.x, enemy.shoot_path_heavy_down_point.world.y, 550);
 
@@ -804,6 +852,8 @@ function init(){
             var bullet = enemy_sniper_bullets_group.getFirstDead();
             bullet.reset(enemy.weapon_point_sniper.world.x, enemy.weapon_point_sniper.world.y);
             bullet.angle = enemy.ship.angle;
+
+            sniper_shoot_music.play();
 
             game.physics.arcade.moveToXY(bullet, enemy.shoot_path_sniper_point.world.x, enemy.shoot_path_sniper_point.world.y, 600);
 
