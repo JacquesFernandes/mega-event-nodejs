@@ -19,6 +19,10 @@ function Weapon(dmg, rate, name, level)
   this.dmg = (dmg === undefined)? 1 : dmg ; // damage per hit
   this.rate = (rate === undefined)? 1 : rate; // Rate of fire
   this.name = (name === undefined)? "Some Gun" : name; // Name of Gun
+  this.t0_unlocked = true;
+  this.t1_unlocked = false;
+  this.t2_unlocked = false;
+  this.t3_unlocked = false;
 };
 
 function Player(player_name)
@@ -47,19 +51,31 @@ function Player(player_name)
         level: Number,
         rate: Number,
         name: String,
-        dmg: Number
+        dmg: Number,
+        t0_unlocked: Boolean,
+        t1_unlocked: Boolean,
+        t2_unlocked: Boolean,
+        t3_unlocked: Boolean
       },
       heavy: {
         level: Number,
         rate: Number,
         name: String,
-        dmg: Number
+        dmg: Number,
+        t0_unlocked: Boolean,
+        t1_unlocked: Boolean,
+        t2_unlocked: Boolean,
+        t3_unlocked: Boolean
       },
       sniper: {
         level: Number,
         rate: Number,
         name: String,
-        dmg: Number
+        dmg: Number,
+        t0_unlocked: Boolean,
+        t1_unlocked: Boolean,
+        t2_unlocked: Boolean,
+        t3_unlocked: Boolean
       }
     }
   };
@@ -78,19 +94,31 @@ function Player(player_name)
           level: this.weapons.light.level,
           rate: this.weapons.light.rate,
           name: this.weapons.light.name,
-          dmg: this.weapons.light.dmg
+          dmg: this.weapons.light.dmg,
+          t0_unlocked: this.weapons.light.t0_unlocked,
+          t1_unlocked: this.weapons.light.t1_unlocked,
+          t2_unlocked: this.weapons.light.t2_unlocked,
+          t3_unlocked: this.weapons.light.t3_unlocked
         },
         heavy: {
           level: this.weapons.heavy.level,
           rate: this.weapons.heavy.rate,
           name: this.weapons.heavy.name,
-          dmg: this.weapons.heavy.dmg
+          dmg: this.weapons.heavy.dmg,
+          t0_unlocked: this.weapons.heavy.t0_unlocked,
+          t1_unlocked: this.weapons.heavy.t1_unlocked,
+          t2_unlocked: this.weapons.heavy.t2_unlocked,
+          t3_unlocked: this.weapons.heavy.t3_unlocked
         },
         sniper: {
           level: this.weapons.sniper.level,
           rate: this.weapons.sniper.rate,
           name: this.weapons.sniper.name,
-          dmg: this.weapons.sniper.dmg
+          dmg: this.weapons.sniper.dmg,
+          t0_unlocked: this.weapons.sniper.t0_unlocked,
+          t1_unlocked: this.weapons.sniper.t1_unlocked,
+          t2_unlocked: this.weapons.sniper.t2_unlocked,
+          t3_unlocked: this.weapons.sniper.t3_unlocked
         }
       }
     };

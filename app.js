@@ -23,6 +23,14 @@ var shop = require('./routes/shop');
 var game = require('./routes/game')(io);
 var users = require('./routes/users');
 
+/* DB Details, change when deploying */
+var db_username = "";
+var db_password = "";
+var db_name = "mega-event";
+var auth_connect_string = "mongodb://"+db_username+":"+db_password+"@localhost/"+db_name;
+var connect_string = "mongodb://localhost/"+db_name;
+mongoose.connect(connect_string);
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.engine('html', require('ejs').renderFile);
@@ -35,12 +43,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.use("/dbtest", function(err,req,res)
+{
+  //console.log(mongoose.;
+  //res.send(mongoose.Collection());
+});
+
 app.use(session({           // TODO : REMOVE DURING PRODUCTION!
   cookieName: "sess",
   secret: "aslkdjalskdjad",
   duration: 24 * 60 * 60 * 1000,
   activeDuration: 1000 * 60 * 5,
-  username: "Mega"
+  username: "lolwut" // RESET IN users.js/setCookie
 }));
 app.use("/checkCookie",function(req,res,next)
 {
@@ -105,13 +119,5 @@ app.use(function(err, req, res, next) {
 	res.status(err.status || 500);
 	res.render('error');
 });
-
-/* DB Details, change when deploying */
-var db_username = "";
-var db_password = "";
-var db_name = "mega-event";
-var auth_connect_string = "mongodb://"+db_username+":"+db_password+"@localhost/"+db_name;
-var connect_string = "mongodb://localhost/"+db_name;
-mongoose.connect(connect_string);
 
 module.exports = { app: app, server: server };

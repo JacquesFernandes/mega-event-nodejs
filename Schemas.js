@@ -4,7 +4,11 @@ var weaponTypeSchema = mongoose.Schema({
   level: Number,
   rate: Number,
   name: String,
-  dmg: Number
+  dmg: Number,
+  t0_unlocked: Boolean,
+  t1_unlocked: Boolean,
+  t2_unlocked: Boolean,
+  t3_unlocked: Boolean
 });
 var weaponSchema = mongoose.Schema({
   light:{
