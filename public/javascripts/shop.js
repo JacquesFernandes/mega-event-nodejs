@@ -5,6 +5,7 @@ var loading;
 var sidebar;
 var button = [];
 var buttongroup;
+var unlockdata = [];
 
 var ajaxRequest;
 
@@ -88,7 +89,8 @@ shopState.prototype = {
         buttongroup = game.add.group();
         /*DELETE THIS*/
         $.get('shop/getUnlocked', function(data, status){
-            checkunlock(data);
+            unlockdata = data;
+            checkunlock();
         });
         
         /*Buttons of Tiers*/
@@ -182,7 +184,7 @@ shopState.prototype = {
             });
         }, this, 1, 0, 2);
         button[7] = game.add.button(game.world.centerX + 340 , 423, 'heavy-2', function(){
-            console.log('Tier 2 heavy');
+            console.log('Tier 2 heavy');http://www.w3schools.com/jquerymobile/default.asp
             button[7].input.enabled = false;
             check(button[7]);
             $.post('shop/purchase/t2/heavy',{
@@ -299,6 +301,11 @@ function check(bObject){
             button[x].setFrames(1,0,2);
         }
     }
+    $.get('shop/getUnlocked', function(data, status){
+        unlockdata = data;
+    });
+    bObject.tint = 0xFFFFFF;
+    checkunlock();
     bObject.setFrames(2);
     bObject.input.enabled = false;
     if( !bObject.input.enabled ){
@@ -306,14 +313,13 @@ function check(bObject){
         //bObject.tint = 0x000080;
     }
 }
-function checkunlock(data){
+function checkunlock(){
     for(var x = 0; x < 12; x += 1){
-        if(data[x]){
+        if(unlockdata[x]){
             button[x].tint = 0xFFFFFF;
         }
         else{
-            button[x].tint = 0x404040;
-            button[x].input.enabled = false;
+            button[x].tint = 0xb3d9ff;
         }
     }
 }
