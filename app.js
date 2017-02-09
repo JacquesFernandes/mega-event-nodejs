@@ -26,7 +26,7 @@ var users = require('./routes/users');
 /* DB Details, change when deploying */
 var db_username = "";
 var db_password = "";
-var db_name = "MegaEvent";
+var db_name = "mega-event";
 var auth_connect_string = "mongodb://"+db_username+":"+db_password+"@localhost/"+db_name;
 var connect_string = "mongodb://localhost/"+db_name;
 mongoose.connect(connect_string);
