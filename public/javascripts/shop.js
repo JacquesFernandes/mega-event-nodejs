@@ -8,6 +8,7 @@ var buttongroup;
 var unlockdata = [];
 
 var ajaxRequest;
+var jsn = {'light-0':0,'heavy-0':1,'sniper-0':2,'light-1':3,'heavy-1':4,'sniper-1':5,'light-2':6,'heavy-2':7,'sniper-2':8,'light-3':9,'heavy-3':10,'sniper-3':11}
 
 var bootState = function () {
     console.log('Booting phaser...');
@@ -90,7 +91,7 @@ shopState.prototype = {
         /*DELETE THIS*/
         $.get('shop/getUnlocked', function(data, status){
             unlockdata = data;
-            checkunlock();
+            initialcheck();
         });
         
         /*Buttons of Tiers*/
@@ -305,15 +306,12 @@ function check(bObject){
         unlockdata = data;
     });
     bObject.tint = 0xFFFFFF;
-    checkunlock();
+    checkunlock(bObject);
     bObject.setFrames(2);
     bObject.input.enabled = false;
-    if( !bObject.input.enabled ){
-        
-        //bObject.tint = 0x000080;
-    }
+    
 }
-function checkunlock(){
+function initialcheck(){
     for(var x = 0; x < 12; x += 1){
         if(unlockdata[x]){
             button[x].tint = 0xFFFFFF;
@@ -321,6 +319,22 @@ function checkunlock(){
         else{
             button[x].tint = 0xb3d9ff;
         }
+    }
+}
+function checkunlock(bObject){
+    var x = jsn[bObject.key];
+    if(!unlocked[x]){
+        $('#dialog').dialog({
+            buttons: {
+                "Unlock": function(){
+                    button[x].tint = 0xFFFFFF;
+                    $( this ).dialog( "close" );
+                },
+                "Cancel": function(){
+                    $( this ).dialog( "close" );
+                }
+            }
+        });
     }
 }
 
