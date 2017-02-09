@@ -79,9 +79,6 @@ function init(){
     var isPlayerAlive = true;
     var isEnemyAlive = true;
 
-    var player_next_respawn_time = 0;
-    var enemy_next_respawn_time = 0;
-    
     var fire_rate_light = 500;
     var fire_rate_heavy = 1500;
     var fire_rate_sniper = 3000; 
@@ -385,7 +382,25 @@ function init(){
             game.physics.startSystem(Phaser.Physics.ARCADE);
 
             tilesprite = game.add.tileSprite(0, 0, 1920, 1920, 'space');
+
+            towersprite = game.add.sprite(1500, 1400, 'tower');
+            towersprite.anchor.setTo(0.5, 0.5);
+            towersprite.scale.setTo(2.5, 2.5);
+            towersprite.frame = 2;
+
+            game.physics.enable(towersprite, Phaser.Physics.ARCADE);
+            towersprite.body.immovable = true;
+            towersprite.body.moves = false;
+
+            towersprite_enemy = game.add.sprite(300, 400, 'tower');
+            towersprite_enemy.anchor.setTo(0.5, 0.5);
+            towersprite_enemy.scale.setTo(2.5, 2.5);
             
+            game.physics.enable(towersprite_enemy, Phaser.Physics.ARCADE);
+            towersprite_enemy.body.immovable = true;
+            towersprite_enemy.body.moves = false;
+            
+
             player = new PLAYER_SHIP(game, player_username, player_spawn_x, player_spawn_y);
             enemy = new ENEMY_SHIP(game, enemy_username, enemy_spawn_x, enemy_spawn_y);
 
@@ -545,6 +560,30 @@ function init(){
                 bullet.kill();
             });
 
+            game.physics.arcade.overlap( player_light_bullets_group, towersprite, function(tower, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( player_heavy_bullets_group, towersprite, function(tower, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( player_sniper_bullets_group, towersprite, function(tower, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( enemy_light_bullets_group, towersprite, function(tower, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( enemy_heavy_bullets_group, towersprite, function(tower, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( enemy_sniper_bullets_group, towersprite, function(tower, bullet){
+                bullet.kill();
+            });
+            
             if(game.input.keyboard.isDown(Phaser.Keyboard.W)){
                 input_info.input_up = true;
                 player.updateInputInfo(input_info.input_up, input_info.input_left, input_info.input_right);
