@@ -312,7 +312,7 @@ function checkunlock(data){
             button[x].tint = 0xFFFFFF;
         }
         else{
-            button[x].tint = 0xa404040;
+            button[x].tint = 0x404040;
             button[x].input.enabled = false;
         }
     }
