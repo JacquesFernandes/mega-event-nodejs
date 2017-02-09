@@ -133,27 +133,29 @@ router.get("/getUnlocked",function(req,res)
     }
 
     var sniper_set = {
-      "t0": player.get("weapons").get("sniper").get("t0_unlocked"),
-      "t1": player.get("weapons").get("sniper").get("t1_unlocked"),
-      "t2": player.get("weapons").get("sniper").get("t2_unlocked"),
-      "t3": player.get("weapons").get("sniper").get("t3_unlocked")
+      t0: player.get("weapons").get("sniper").get("t0_unlocked"),
+      t1: player.get("weapons").get("sniper").get("t1_unlocked"),
+      t2: player.get("weapons").get("sniper").get("t2_unlocked"),
+      t3: player.get("weapons").get("sniper").get("t3_unlocked")
     };
 
     var light_set = {
-      "t0":player.get("weapons").get("light").get("t0_unlocked"),
-      "t1": player.get("weapons").get("light").get("t1_unlocked"),
-      "t2": player.get("weapons").get("light").get("t2_unlocked"),
-      "t3": player.get("weapons").get("light").get("t3_unlocked")
+      t0: player.get("weapons").get("light").get("t0_unlocked"),
+      t1: player.get("weapons").get("light").get("t1_unlocked"),
+      t2: player.get("weapons").get("light").get("t2_unlocked"),
+      t3: player.get("weapons").get("light").get("t3_unlocked")
     };
 
     var heavy_set = {
-      "t0": player.get("weapons").get("heavy").get("t0_unlocked"),
-      "t1": player.get("weapons").get("heavy").get("t1_unlocked"),
-      "t2": player.get("weapons").get("heavy").get("t2_unlocked"),
-      "t3": player.get("weapons").get("heavy").get("t3_unlocked")
+      t0: player.get("weapons").get("heavy").get("t0_unlocked"),
+      t1: player.get("weapons").get("heavy").get("t1_unlocked"),
+      t2: player.get("weapons").get("heavy").get("t2_unlocked"),
+      t3: player.get("weapons").get("heavy").get("t3_unlocked")
     };
 
-    var to_send = {light: light_set, heavy:heavy_set, sniper: sniper_set};
+
+
+    var to_send = [light_set.t0, heavy_set.t0, sniper_set.t0, light_set.t1, heavy_set.t1, sniper_set.t1, light_set.t2, heavy_set.t2, sniper_set.t2, light_set.t3, heavy_set.t3, sniper_set.t3];
 
     res.send(to_send);
     return;
