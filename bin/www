@@ -11,7 +11,7 @@ var debug = require('debug')('mega-event:server');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort('3000');
+var port = normalizePort('3011');
 app.set('port', port);
 
 /**
