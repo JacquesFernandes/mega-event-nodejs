@@ -77,25 +77,8 @@ shopState.prototype = {
     },
     create: function () {
         game.stage.backgroundColor = '#000033';
-        $(function() {
-            $("dialog").dialog({
-            autoOpen: false,
-            buttons: {
-                Unlock: function() {
-                    button[x].tint = 0xFFFFFF;
-                    $( this ).dialog( "close" );
-                    return true;
-                },
-                Cancel: function() {
-                    $( this ).dialog( "close" );
-                    return false;
-                }
-            },
-            title: "Confirm submission"
-            });
-        })
         
-		shopback = game.add.sprite(game.world.centerX,game.world.centerY,'sidebar')
+		shopback = game.add.sprite(game.world.centerX,game.world.centerY,'sidebar');
         
         shopback.anchor.setTo(0.5);
         /*Global anchor point*/
@@ -322,7 +305,7 @@ function check(bObject){
     });
     bObject.tint = 0xFFFFFF;
     if(checkunlock(bObject)){
-        console.log('Inside checkunlock');
+        console.log('After checkunlock');
         bObject.setFrames(2);
         bObject.input.enabled = false;
     }
@@ -344,27 +327,17 @@ function checkunlock(bObject){
     var x = jsn[bObject.key];
     console.log('Value of unlockdata[x] : '+unlockdata[x]);
     if(!unlockdata[x]){
-        /*$('#dialog-confirm').dialog({
-            resizable: false,
-            height: auto,
-            modal: true,
-            buttons: {
-                "Unlock": function(){
-                    button[x].tint = 0xFFFFFF;
-                    $( this ).dialog( "close" );
-                    return true;
-                },
-                "Cancel": function(){
-                    $( this ).dialog( "close" );
-                    return false;
-                }
-            }
-        });*/
-        $( "#dialog" ).dialog();
+        var rVal = confirm("Confirm purchase?");
+        if(rVal == true){
+            button[x].tint = 0xFFFFFF;
+            return true;
+        }
+        else{
+            return false;
+        }
     }
     else{
-        console.log('Already unlocked');
-        $('#dialog').dialog( "open" );
+        alert('Already unlocked');
         
         return true;
     }
