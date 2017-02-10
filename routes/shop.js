@@ -14,11 +14,12 @@ router.get('/', function (req, res, next)
 {
   if (!req.sess.username)
   {
-    res.redirect("/users/setCookie");
+    res.redirect("http://www.teknack.in");
     return;
   }
 
   res.render('shop');
+  return;
 });
 /*** APIs ***/
 router.get("/getTiers", function(req,res)
@@ -31,8 +32,8 @@ router.post("/purchase/:tier/:weapon_class",function(req,res)
 {
   if (!req.sess.username)
   {
-    console.log("Cookie not found!");
-    res.redirect("/users/setCookie");
+    //console.log("Cookie not found!");
+    res.redirect("http://www.teknack.in");//res.redirect("/users/setCookie");
     return;
   }
 
@@ -115,7 +116,7 @@ router.get("/getUnlocked",function(req,res)
 
   if (!req.sess.username)
   {
-    res.redirect("/users/setCookie");
+    res.redirect("http://www.teknack.in");
     return;
   }
   

@@ -113,14 +113,15 @@ router.get("/getCookie",function(req, res, next)
   }
 });
 
-router.get("/setCookie",function(req, res) // TODO : Work on this afterwards; fetch data and set it.
+router.get("/setCookie/:name",function(req, res) // TODO : Work on this afterwards; fetch data and set it.
 {
   //console.log("REACHED");
-  req.sess.username = "J2";
+  req.sess.username = req.params.name;
   //req.sess.status = true;
   console.log("cookie should be set for: "+req.sess.username);
   //console.log(req.SomeCookie);
-  res.redirect("/shop");
+  res.send("Cookie set for "+req.sess.username+"<br>Now enter the url you want to go to");
+  return;
 
   //PRODUCTION
   //res.redirect("http://teknack.in/login");
