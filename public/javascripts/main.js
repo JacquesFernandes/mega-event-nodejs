@@ -74,6 +74,8 @@ gameState.prototype = {
         leaderboard.alpha = 0.5;
         leaderboard.endFill();
         
+        $.get("/users/getLeaderBoard")
+        
         
         /**********************************************/
         /*Player Info*/
