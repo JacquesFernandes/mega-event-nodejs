@@ -7,9 +7,38 @@ var db_name = "mega_event";
 var player_table = "players";
 var schemas = require("../Schemas");
 var playerModel = schemas.PlayerModel;
+var SidAPI = require("../request-api");
+var _ = require("underscore");
 
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
+});
+
+router.get("/getLeaderBoard",function(req,res)
+{
+  playerModel.find({},function(err,players)
+  {
+    var player_list = [];
+    var leaderboard_items = []; // list of {username:<username>, megapoints:<megapoints>}
+
+    _.each(players,function(player)
+    {
+      player_list.push(player.username);
+
+      SidAPI.getMega(player.username,function(points)
+      {
+        leaderboard_items.push({
+          username: player.username,
+          megapoints: points
+        });
+      });
+    });
+
+    leaderboard_items = _.sortBy(leaderboard_items,"megapoints").reverse();
+
+    res.send(leaderboard_items);
+    return;
+  });
 });
 
 router.get("/getPlayers",function(req,res) // Get *all* player's details
