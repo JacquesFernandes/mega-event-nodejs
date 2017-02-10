@@ -96,7 +96,7 @@ shopState.prototype = {
         //Tier 0
         button[0] = game.add.button(game.world.centerX + 211, 185, 'light-0', function(){
             console.log('Tier 0 light');
-            //button[0].input.enabled = false;
+            button[0].input.enabled = false;
             check(button[0]);
             $.post('shop/purchase/t0/light',{
                 tier: 't0',
@@ -105,7 +105,7 @@ shopState.prototype = {
             function(data, status){
                 //Callback function
             });
-        }, this, 1, 0, 2);
+        }, this, 2);
         button[1] = game.add.button(game.world.centerX + 333 , 185, 'heavy-0', function(){
             console.log('Tier 0 heavy');
             button[1].input.enabled = false;
@@ -117,7 +117,7 @@ shopState.prototype = {
             function(data, status){
                 //Callback function
             });
-        }, this, 1, 0, 2);
+        }, this, 2);
         button[2] = game.add.button(game.world.centerX + 455 , 185, 'sniper-0', function(){
             console.log('Tier 0 sniper');
             button[2].input.enabled = false;
@@ -129,7 +129,7 @@ shopState.prototype = {
             function(data, status){
                 //Callback function
             });
-        }, this, 1, 0, 2);
+        }, this, 2);
         
         //Tier 1
         button[3] = game.add.button(game.world.centerX + 211, 305, 'light-1', function(){
@@ -312,7 +312,7 @@ function check(bObject){
 
     
 }
-function initialcheck(){
+function initialcheck(){    
     for(var x = 0; x < 12; x += 1){
         if(unlockdata[x]){
             button[x].tint = 0xFFFFFF;
@@ -337,8 +337,6 @@ function checkunlock(bObject){
         }
     }
     else{
-        alert('Already unlocked');
-        
         return true;
     }
 }
@@ -349,4 +347,3 @@ game.state.add('preloadState', preloadState);
 game.state.add('shopState', shopState);
 
 game.state.start('bootState');
-
