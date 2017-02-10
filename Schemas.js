@@ -27,6 +27,8 @@ var playerSchema = mongoose.Schema({
   movement_speed: Number,
   exp: Number,
   level: Number,
+  wins: Number,
+  losses: Number,
   weapons: {
       type: weaponSchema
   }
