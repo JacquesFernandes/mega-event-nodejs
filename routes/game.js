@@ -32,7 +32,7 @@ module.exports = function(io){
 
         var username = req.sess.username;
 
-        request({uri:"/lobby/getMatch/"+username},function(err,response,body)
+        request({uri:"http:localhost:3011/lobby/getMatch/"+username},function(err,response,body)
         {
             console.log(body);
             var data = JSON.parse(body)
