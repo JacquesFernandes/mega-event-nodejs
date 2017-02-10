@@ -2,6 +2,7 @@ module.exports = function(io){
 
 	var express = require('express');
 	var router = express.Router();
+    var request = require("request");
 
     var host_name = 'mit17k';
     var client_name = 'mitesh';
@@ -28,8 +29,17 @@ module.exports = function(io){
     });
 
     router.post('/new_game', function (req, res, next) {
-        
-        res.send({ 'host_name': host_name, 'client_name': client_name });
+
+        var username = req.sess.username;
+
+        request({uri:"/lobby/getMatch/"+username},function(err,response,body)
+        {
+            console.log(body);
+            var data = JSON.parse(body)
+            res.send(data); //FORMAT : {"host": <host object>: "client": <client object>} :: object formats are as specified in users/getFightInfo
+            return;
+            //res.send({ 'host_name': host_name, 'client_name': client_name }); // UNCOMMENT AFTERWARDS
+        });
     });
 
     router.get('/host', function (req, res, next){
