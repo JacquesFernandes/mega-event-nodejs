@@ -97,6 +97,28 @@ router.get("/getMatch/:username", function(req,res) // TODO: Change afterwards
     });
 });
 
+router.get("/getMatchSets/",function(req,res)
+{
+    var simple_list = [];
+
+    _.each(matches,function(match)
+    {
+        simple_list.push({
+            client: {
+                username: match.client.username,
+                socket_id: undefined
+            },
+            host: {
+                username: match.host.username,
+                socket_id: undefined
+            }
+        });
+    });
+
+    res.send(simple_list);
+    return;
+});
+
 router.get("/getGameStatus", function(req,res)
 {
     if (queue.length < 2)
@@ -150,3 +172,28 @@ var getFightDetails = function(name)
         }
     });
 };
+
+/*** EXPORTED FUNCTIONS ***/
+
+var getMatchSets = function()
+{
+    var simple_list = [];
+
+    _.each(matches,function(match)
+    {
+        simple_list.push({
+            client: {
+                username: match.client.username,
+                socket_id: undefined
+            },
+            host: {
+                username: match.host.username,
+                socket_id: undefined
+            }
+        });
+    });
+
+    return(simple_list);
+}
+
+module.exports.getMatchSets = getMatchSets;

@@ -39,11 +39,11 @@ function init(){
     var player;
     var enemy;
 
-    var player_spawn_x = 200;
+    var player_spawn_x = 600;
     var player_spawn_y = 500;
 
-    var enemy_spawn_x = 500;
-    var enemy_spawn_y = 200;
+    var enemy_spawn_x = 1200;
+    var enemy_spawn_y = 1400;
 
     var input_info = { 'input_up': false, 'input_left': false, 'input_right': false };
 
@@ -60,6 +60,19 @@ function init(){
     var weapon_key_light;
     var weapon_key_sniper;
     var weapon_key_one_heavy;
+    var weapon_shoot_key;
+
+    var towersprite;
+    var towersprite_enemy;
+
+    var player_tower_health = 1000;
+    var enemy_tower_health = 1000;
+
+    var isPlayerAlive = true;
+    var isEnemyAlive = true;
+
+    var player_next_respawn_time = 0;
+    var enemy_next_respawn_time = 0;
 
     var fire_rate_light = 500;
     var fire_rate_heavy = 1500;
@@ -82,7 +95,12 @@ function init(){
     var isHeavyReady = true;
     var isLightReady = true;
 
-    var startGame = false;
+    var backgound_music;
+    var sniper_shoot_music;
+    var heavy_shoot_music;
+    var light_shoot_music;
+
+    var startGame = true;
 
     PLAYER_SHIP = function (game, username, x, y) {
         
@@ -373,6 +391,13 @@ function init(){
             game.load.spritesheet('loadout_sniper', '/assets/spritesheet/loadout_sniper.png', 400, 500, 8);
             game.load.spritesheet('loadout_light', '/assets/spritesheet/loadout_light.png', 400, 500, 8);
 
+            game.load.spritesheet('tower', '/assets/spritesheet/tower.png', 200, 200, 4);
+
+            game.load.audio('background_music', 'assets/audio/background.mp3');
+            game.load.audio('sniper_shoot_music', 'assets/audio/sniper.mp3');
+            game.load.audio('heavy_shoot_music', 'assets/audio/heavy.mp3');
+            game.load.audio('light_shoot_music', 'assets/audio/light.mp3');
+            
         },
         update: function () {
 
@@ -404,6 +429,23 @@ function init(){
 
             tilesprite = game.add.tileSprite(0, 0, 1920, 1920, 'space');
             
+            towersprite = game.add.sprite(300, 400, 'tower');
+            towersprite.anchor.setTo(0.5, 0.5);
+            towersprite.scale.setTo(2.5, 2.5);
+            
+            game.physics.enable(towersprite, Phaser.Physics.ARCADE);
+            towersprite.body.immovable = true;
+            towersprite.body.moves = false;
+
+            towersprite_enemy = game.add.sprite(1500, 1400, 'tower');
+            towersprite_enemy.anchor.setTo(0.5, 0.5);
+            towersprite_enemy.scale.setTo(2.5, 2.5);
+            
+            game.physics.enable(towersprite_enemy, Phaser.Physics.ARCADE);
+            towersprite_enemy.body.immovable = true;
+            towersprite_enemy.body.moves = false;
+            towersprite_enemy.frame = 2;
+
             player = new PLAYER_SHIP(game, player_username, player_spawn_x, player_spawn_y);
             enemy = new ENEMY_SHIP(game, enemy_username, enemy_spawn_x, enemy_spawn_y);
 
@@ -456,6 +498,8 @@ function init(){
             game.input.keyboard.removeKeyCapture(Phaser.Keyboard.LEFT);
             game.input.keyboard.removeKeyCapture(Phaser.Keyboard.RIGHT);
 
+            game.input.keyboard.removeKeyCapture(Phaser.Keyboard.SPACEBAR);
+
             /* Player Bullets */
             player_light_bullets_group = game.add.group();
             player_light_bullets_group.enableBody = true;
@@ -506,8 +550,6 @@ function init(){
             enemy_sniper_bullets_group.setAll('checkWorldBounds', true);
             enemy_sniper_bullets_group.setAll('outOfBoundsKill', true);
 
-            game.input.onDown.add(fireBullet, this);
-
             weapon_key_light = game.input.keyboard.addKey(Phaser.Keyboard.ONE);
             weapon_key_light.onDown.add(changeWeaponToLight, this);
 
@@ -517,10 +559,28 @@ function init(){
             weapon_key_heavy = game.input.keyboard.addKey(Phaser.Keyboard.THREE);
             weapon_key_heavy.onDown.add(changeWeaponToHeavy, this);
 
+            weapon_shoot_key = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+            weapon_shoot_key.onDown.add(fireBullet, this);
+
+            background_music = game.add.audio('background_music');
+
+            sniper_shoot_music = game.add.audio('sniper_shoot_music');
+            heavy_shoot_music = game.add.audio('heavy_shoot_music');
+            light_shoot_music = game.add.audio('light_shoot_music');
+
+            background_music.onStop.add(repeatBackground, this);
+            background_music.play();
+
         },
         update: function (){
 
             game.physics.arcade.collide(player.ship, enemy.ship);
+
+            game.physics.arcade.collide(towersprite, enemy.ship);
+            game.physics.arcade.collide(player.ship, towersprite);
+
+            game.physics.arcade.collide(towersprite_enemy, enemy.ship);
+            game.physics.arcade.collide(player.ship, towersprite_enemy);
 
             enemy.updateInputInfo(input_info.input_up, input_info.input_left, input_info.input_right)
             
@@ -617,6 +677,30 @@ function init(){
                     updatePlayerHealthbar();
                     socket.emit('newHostHp', { 'hp': player_current_hp });
                 }
+            });
+
+            game.physics.arcade.overlap( player_light_bullets_group, towersprite, function(tower, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( player_heavy_bullets_group, towersprite, function(tower, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( player_sniper_bullets_group, towersprite, function(tower, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( enemy_light_bullets_group, towersprite, function(tower, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( enemy_heavy_bullets_group, towersprite, function(tower, bullet){
+                bullet.kill();
+            });
+
+            game.physics.arcade.overlap( enemy_sniper_bullets_group, towersprite, function(tower, bullet){
+                bullet.kill();
             });
 
             if(game.time.now < next_fire_light){
@@ -760,6 +844,8 @@ function init(){
                 bullet2.reset(player.weapon_point_light_down.world.x, player.weapon_point_light_down.world.y);
                 bullet2.angle = player.ship.angle;
 
+                light_shoot_music.play();
+
                 game.physics.arcade.moveToXY(bullet1, player.shoot_path_light_up_point.world.x, player.shoot_path_light_up_point.world.y, 500);
                 game.physics.arcade.moveToXY(bullet2, player.shoot_path_light_down_point.world.x, player.shoot_path_light_down_point.world.y, 500);
 
@@ -782,6 +868,8 @@ function init(){
                 bullet2.reset(player.weapon_point_heavy_down.world.x, player.weapon_point_heavy_down.world.y);
                 bullet2.angle = player.ship.angle;
 
+                heavy_shoot_music.play();
+
                 game.physics.arcade.moveToXY(bullet1, player.shoot_path_heavy_up_point.world.x, player.shoot_path_heavy_up_point.world.y, 550);
                 game.physics.arcade.moveToXY(bullet2, player.shoot_path_heavy_down_point.world.x, player.shoot_path_heavy_down_point.world.y, 550);
 
@@ -799,6 +887,8 @@ function init(){
                 var bullet = player_sniper_bullets_group.getFirstDead();
                 bullet.reset(player.weapon_point_sniper.world.x, player.weapon_point_sniper.world.y);
                 bullet.angle = player.ship.angle;
+
+                sniper_shoot_music.play();
 
                 game.physics.arcade.moveToXY(bullet, player.shoot_path_sniper_point.world.x, player.shoot_path_sniper_point.world.y, 600);
                 
@@ -834,6 +924,10 @@ function init(){
         enemy_healthbar.scale.setTo(scale_x, 0.7);
     }
 
+    function repeatBackground(){
+        background_music.play();
+    }
+
     socket.on('newClientInput', function (data) {
 
         input_info.input_up = data.input_up;
@@ -858,6 +952,8 @@ function init(){
             bullet2.reset(enemy.weapon_point_light_down.world.x, enemy.weapon_point_light_down.world.y);
             bullet2.angle = enemy.ship.angle;
 
+            light_shoot_music.play();
+
             game.physics.arcade.moveToXY(bullet1, enemy.shoot_path_light_up_point.world.x, enemy.shoot_path_light_up_point.world.y, 500);
             game.physics.arcade.moveToXY(bullet2, enemy.shoot_path_light_down_point.world.x, enemy.shoot_path_light_down_point.world.y, 500);
         
@@ -872,6 +968,8 @@ function init(){
             bullet2.reset(enemy.weapon_point_heavy_down.world.x, enemy.weapon_point_heavy_down.world.y);
             bullet2.angle = enemy.ship.angle;
 
+            heavy_shoot_music.play();
+
             game.physics.arcade.moveToXY(bullet1, enemy.shoot_path_heavy_up_point.world.x, enemy.shoot_path_heavy_up_point.world.y, 550);
             game.physics.arcade.moveToXY(bullet2, enemy.shoot_path_heavy_down_point.world.x, enemy.shoot_path_heavy_down_point.world.y, 550);
 
@@ -881,6 +979,8 @@ function init(){
             var bullet = enemy_sniper_bullets_group.getFirstDead();
             bullet.reset(enemy.weapon_point_sniper.world.x, enemy.weapon_point_sniper.world.y);
             bullet.angle = enemy.ship.angle;
+
+            sniper_shoot_music.play();
 
             game.physics.arcade.moveToXY(bullet, enemy.shoot_path_sniper_point.world.x, enemy.shoot_path_sniper_point.world.y, 600);
 
