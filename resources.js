@@ -1,5 +1,5 @@
 var request = require("request");
-
+var Schemas = require("./Schemas");
 /* MISCELLANEOUS FUNCTIONS */
 
 function MiscFunctions()
@@ -25,7 +25,7 @@ function Weapon(dmg, rate, name, level)
   this.t3_unlocked = false;
 };
 
-function Player(player_name)
+function Player(player_name) // NOTE: any changes to be reflected in .toJson() as well
 {
   //this.userid = (userid === undefined)? "LOLWUT" : userid;
   this.name = (player_name === undefined)? "N00B" : player_name;
@@ -33,13 +33,15 @@ function Player(player_name)
   this.movement_speed = 10;
   this.exp = 0;
   this.level = 0;
+  this.wins = 0;
+  this.losses = 0;
 
   this.weapons = {};
   this.weapons.light = new Weapon(10,10,"Light Gun");
   this.weapons.heavy = new Weapon(20,5,"Heavy Gun");
   this.weapons.sniper = new Weapon(30,1,"Sniper Guns");
 
-  this.schema = {
+  this.schema = Schemas.playerSchema;/*{
     //userid: String,
     username: String,
     hp: Number,
@@ -78,7 +80,7 @@ function Player(player_name)
         t3_unlocked: Boolean
       }
     }
-  };
+  };*/
   /* METHODS */
   this.toJSON = function()
   {
@@ -89,6 +91,8 @@ function Player(player_name)
       movement_speed: this.movement_speed,
       exp: this.exp,
       level: this.level,
+      wins: this.wins,
+      losses: this.losses,
       weapons: {
         light: {
           level: this.weapons.light.level,
