@@ -8,6 +8,7 @@ var buttongroup;
 var unlockdata = [];
 
 var ajaxRequest;
+var jsn = {'light-0':0,'heavy-0':1,'sniper-0':2,'light-1':3,'heavy-1':4,'sniper-1':5,'light-2':6,'heavy-2':7,'sniper-2':8,'light-3':9,'heavy-3':10,'sniper-3':11}
 
 var bootState = function () {
     console.log('Booting phaser...');
@@ -58,28 +59,26 @@ shopState.prototype = {
 
     preload: function () {
 		game.load.image('sidebar', '/assets/images/shopbackground.jpg');
-        game.load.spritesheet('lightbutton', '/assets/sprites/tier_button_light.png', 300, 100);
-        game.load.spritesheet('heavybutton', '/assets/sprites/tier_button_heavy.png', 300, 100);
-        game.load.spritesheet('sniperbutton', '/assets/sprites/tier_button_sniper.png', 300, 100);
-        game.load.spritesheet('light-0', '/assets/buttons/light_button_final_0.png', 193, 90);
-        game.load.spritesheet('light-1', '/assets/buttons/light_button_final_1.png', 193, 90);
-        game.load.spritesheet('light-2', '/assets/buttons/light_button_final_2.png', 193, 90);
-        game.load.spritesheet('light-3', '/assets/buttons/light_button_final_3.png', 193, 90);
+        game.load.spritesheet('light-0', '/assets/buttons/light_button_0.png', 140, 80);
+        game.load.spritesheet('light-1', '/assets/buttons/light_button_1.png', 140, 80);
+        game.load.spritesheet('light-2', '/assets/buttons/light_button_2.png', 140, 80);
+        game.load.spritesheet('light-3', '/assets/buttons/light_button_3.png', 140, 80);
         
-        game.load.spritesheet('heavy-0', '/assets/buttons/heavy_button_final_0.png', 176, 90);
-        game.load.spritesheet('heavy-1', '/assets/buttons/heavy_button_final_1.png', 176, 90);
-        game.load.spritesheet('heavy-2', '/assets/buttons/heavy_button_final_2.png', 176, 90);
-        game.load.spritesheet('heavy-3', '/assets/buttons/heavy_button_final_3.png', 176, 90);
+        game.load.spritesheet('heavy-0', '/assets/buttons/heavy_button_0.png', 140, 80);
+        game.load.spritesheet('heavy-1', '/assets/buttons/heavy_button_1.png', 140, 80);
+        game.load.spritesheet('heavy-2', '/assets/buttons/heavy_button_2.png', 140, 80);
+        game.load.spritesheet('heavy-3', '/assets/buttons/heavy_button_3.png', 140, 80);
         
-        game.load.spritesheet('sniper-0', '/assets/buttons/sniper_button_final_0.png', 151, 90);
-        game.load.spritesheet('sniper-1', '/assets/buttons/sniper_button_final_1.png', 151, 90);
-        game.load.spritesheet('sniper-2', '/assets/buttons/sniper_button_final_2.png', 151, 90);
-        game.load.spritesheet('sniper-3', '/assets/buttons/sniper_button_final_3.png', 151, 90);
+        game.load.spritesheet('sniper-0', '/assets/buttons/sniper_button_0.png', 140, 80);
+        game.load.spritesheet('sniper-1', '/assets/buttons/sniper_button_1.png', 140, 80);
+        game.load.spritesheet('sniper-2', '/assets/buttons/sniper_button_2.png', 140, 80);
+        game.load.spritesheet('sniper-3', '/assets/buttons/sniper_button_3.png', 140, 80);
+        
     },
     create: function () {
         game.stage.backgroundColor = '#000033';
         
-		shopback = game.add.sprite(game.world.centerX,game.world.centerY,'sidebar')
+		shopback = game.add.sprite(game.world.centerX,game.world.centerY,'sidebar');
         
         shopback.anchor.setTo(0.5);
         /*Global anchor point*/
@@ -90,12 +89,12 @@ shopState.prototype = {
         /*DELETE THIS*/
         $.get('shop/getUnlocked', function(data, status){
             unlockdata = data;
-            checkunlock();
+            initialcheck();
         });
         
         /*Buttons of Tiers*/
         //Tier 0
-        button[0] = game.add.button(game.world.centerX + 150, 170, 'light-0', function(){
+        button[0] = game.add.button(game.world.centerX + 211, 185, 'light-0', function(){
             console.log('Tier 0 light');
             //button[0].input.enabled = false;
             check(button[0]);
@@ -107,7 +106,7 @@ shopState.prototype = {
                 //Callback function
             });
         }, this, 1, 0, 2);
-        button[1] = game.add.button(game.world.centerX + 340 , 170, 'heavy-0', function(){
+        button[1] = game.add.button(game.world.centerX + 333 , 185, 'heavy-0', function(){
             console.log('Tier 0 heavy');
             button[1].input.enabled = false;
             check(button[1]);
@@ -119,7 +118,7 @@ shopState.prototype = {
                 //Callback function
             });
         }, this, 1, 0, 2);
-        button[2] = game.add.button(game.world.centerX + 515 , 170, 'sniper-0', function(){
+        button[2] = game.add.button(game.world.centerX + 455 , 185, 'sniper-0', function(){
             console.log('Tier 0 sniper');
             button[2].input.enabled = false;
             check(button[2]);
@@ -133,7 +132,7 @@ shopState.prototype = {
         }, this, 1, 0, 2);
         
         //Tier 1
-        button[3] = game.add.button(game.world.centerX + 150, 297, 'light-1', function(){
+        button[3] = game.add.button(game.world.centerX + 211, 305, 'light-1', function(){
             console.log('Tier 1 light');
             //button[3].input.enabled = false;
             check(button[3]);
@@ -145,7 +144,7 @@ shopState.prototype = {
                 //Callback function
             });
         }, this, 1, 0, 2);
-        button[4] = game.add.button(game.world.centerX+ 340 , 297, 'heavy-1', function(){
+        button[4] = game.add.button(game.world.centerX+ 333, 305, 'heavy-1', function(){
             console.log('Tier 1 heavy');
             button[4].input.enabled = false;
             check(button[4]);
@@ -157,7 +156,7 @@ shopState.prototype = {
                 //Callback function
             });
         }, this, 1, 0, 2);
-        button[5] = game.add.button(game.world.centerX + 515 , 297, 'sniper-1', function(){
+        button[5] = game.add.button(game.world.centerX + 455 , 305, 'sniper-1', function(){
             console.log('Tier 1 sniper');
             button[5].input.enabled = false;
             check(button[5]);
@@ -171,7 +170,7 @@ shopState.prototype = {
         }, this, 1, 0, 2);
         
         //Tier 2
-        button[6] = game.add.button(game.world.centerX + 150, 423, 'light-2', function(){
+        button[6] = game.add.button(game.world.centerX + 211, 426, 'light-2', function(){
             console.log('Tier 2 light');
             //button[6].input.enabled = false;
             check(button[6]);
@@ -183,8 +182,8 @@ shopState.prototype = {
                 //Callback function
             });
         }, this, 1, 0, 2);
-        button[7] = game.add.button(game.world.centerX + 340 , 423, 'heavy-2', function(){
-            console.log('Tier 2 heavy');http://www.w3schools.com/jquerymobile/default.asp
+        button[7] = game.add.button(game.world.centerX + 333 , 426, 'heavy-2', function(){
+            console.log('Tier 2 heavy');
             button[7].input.enabled = false;
             check(button[7]);
             $.post('shop/purchase/t2/heavy',{
@@ -195,7 +194,7 @@ shopState.prototype = {
                 //Callback function
             });
         }, this, 1, 0, 2);
-        button[8] = game.add.button(game.world.centerX + 515 , 423, 'sniper-2', function(){
+        button[8] = game.add.button(game.world.centerX + 455, 426, 'sniper-2', function(){
             console.log('Tier 2 sniper');
             button[8].input.enabled = false;
             check(button[8]);
@@ -209,7 +208,7 @@ shopState.prototype = {
         }, this, 1, 0, 2);
         
         //Tier48
-        button[9] = game.add.button(game.world.centerX + 150, 548, 'light-3', function(){
+        button[9] = game.add.button(game.world.centerX + 211, 547, 'light-3', function(){
             console.log('Tier 3 light');
             //button[9].input.enabled = false;
             check(button[9]);
@@ -221,7 +220,7 @@ shopState.prototype = {
                 //Callback function
             });
         }, this, 1, 0, 2);
-        button[10] = game.add.button(game.world.centerX + 340 , 548, 'heavy-3', function(){
+        button[10] = game.add.button(game.world.centerX + 333 , 547, 'heavy-3', function(){
             console.log('Tier 3 heavy');
             button[10].input.enabled = false;
             check(button[10]);
@@ -233,7 +232,7 @@ shopState.prototype = {
                 //Callback function
             });
         }, this, 1, 0, 2);
-        button[11] = game.add.button(game.world.centerX + 515, 548, 'sniper-3', function(){
+        button[11] = game.add.button(game.world.centerX + 455, 547, 'sniper-3', function(){
             console.log('Tier 3 sniper');
             button[11].input.enabled = false;
             check(button[11]);
@@ -305,15 +304,15 @@ function check(bObject){
         unlockdata = data;
     });
     bObject.tint = 0xFFFFFF;
-    checkunlock();
-    bObject.setFrames(2);
-    bObject.input.enabled = false;
-    if( !bObject.input.enabled ){
-        
-        //bObject.tint = 0x000080;
+    if(checkunlock(bObject)){
+        console.log('After checkunlock');
+        bObject.setFrames(2);
+        bObject.input.enabled = false;
     }
+
+    
 }
-function checkunlock(){
+function initialcheck(){
     for(var x = 0; x < 12; x += 1){
         if(unlockdata[x]){
             button[x].tint = 0xFFFFFF;
@@ -321,6 +320,26 @@ function checkunlock(){
         else{
             button[x].tint = 0xb3d9ff;
         }
+    }
+}
+function checkunlock(bObject){
+    //console.log('Inside checkunlock');
+    var x = jsn[bObject.key];
+    console.log('Value of unlockdata[x] : '+unlockdata[x]);
+    if(!unlockdata[x]){
+        var rVal = confirm("Confirm purchase?");
+        if(rVal == true){
+            button[x].tint = 0xFFFFFF;
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    else{
+        alert('Already unlocked');
+        
+        return true;
     }
 }
 
