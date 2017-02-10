@@ -13,14 +13,11 @@ var matches = []; //store {host:<host>,client:<client>} objects
 /* ROUTES */
 router.get("/",function(req,res)
 {
-    if (req.SomeCookie.username)
+    if (req.sess.username === null || req.sess.username === undefined)
     {
-        player_lobby.push(req.SomeCookie.username);
+        res.redirect("http://www.teknack.in");
     }
-    else
-    {
-        res.redirect("/");
-    }
+
     res.render("lobby");
 });
 
@@ -29,9 +26,9 @@ router.post("/ready/:name", function(req,res)
     var username = "";
     if (req.sess.username === undefined || req.sess.username === null)
     {
-        username = req.params.name;
-        //res.redirect("https://www.teknack.in");
-        //return;
+        //username = req.params.name;
+        res.redirect("https://www.teknack.in");
+        return;
     }
     else
     {
@@ -93,7 +90,7 @@ router.get("/getMatch/:username", function(req,res) // TODO: Change afterwards
     {
         if (match.host.username == username || match.client.username == username)
         {
-            console.log("reached");
+            //console.log("reached");
             res.send(match);
             return;
         }
