@@ -36,7 +36,7 @@ router.get("/getLeaderBoard",function(req,res)
 
     leaderboard_items = _.sortBy(leaderboard_items,"megapoints").reverse();
 
-    res.send(leaderboard_items);
+    res.send(leaderboard_items.slice(0,5));
     return;
   });
 });
