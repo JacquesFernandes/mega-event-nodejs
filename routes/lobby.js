@@ -21,7 +21,7 @@ router.get("/",function(req,res)
     res.render("lobby");
 });
 
-router.post("/ready/:name", function(req,res)
+router.post("/ready/", function(req,res)
 {
     var username = "";
     if (req.sess.username === undefined || req.sess.username === null)
