@@ -90,13 +90,39 @@ router.post("/purchase/:tier/:weapon_class",function(req,res)
     console.log("unlocked_status: "+unlocked_status);
     if (!unlocked_status) // TODO: USE SID'S API HERE // if not unlocked, run transaction
     { 
-      //fetch points
-      //check points
-      //deduct points
-      console.log("purchasing!");
-      //console.log(player);
-      unlock_tier = tier+"_unlocked";
-      player.get("weapons").get(weapon_class).set(unlock_tier,true);
+      SidAPI.getMega(req.sess.username, function(score)
+      {
+        var costs = {
+          t1: 300,
+          t2: 500,
+          t3: 700
+        };
+
+        if (tier === "t1" && score < 300)
+        {
+          res.send({status:"Insufficient score"});
+          return;
+        }
+        if (tier === "t2" && score < 500)
+        {
+          res.send({status:"Insufficient score"});
+          return;
+        }
+        if (tier === "t3" && score < 700)
+        {
+          res.send({status:"Insufficient score"});
+          return;
+        }
+
+        SidAPI.updateMega(req.sess.username,Number(score)-costs[tier]);
+        
+        console.log("purchasing!");
+        //console.log(player);
+        unlock_tier = tier+"_unlocked";
+        player.get("weapons").get(weapon_class).set(unlock_tier,true);
+
+      });
+      
     }
     
     //update player DONE
