@@ -71,7 +71,7 @@ router.post("/purchase/:tier/:weapon_class",function(req,res)
       //check points
       //deduct points
       console.log("purchasing!");
-      console.log(player);
+      //console.log(player);
       unlock_tier = tier+"_unlocked";
       player.get("weapons").get(weapon_class).set(unlock_tier,true);
     }
