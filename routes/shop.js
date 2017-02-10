@@ -9,6 +9,7 @@ var weaponTypeSchema = schemas.weaponTypeSchema;
 var weaponSchema = schemas.weaponSchema;
 var playerSchema = schemas.playerSchema;
 var PlayerModel = schemas.PlayerModel;
+var SidAPI = require("../request-api");
 
 router.get('/', function (req, res, next)
 {
@@ -26,6 +27,27 @@ router.get("/getTiers", function(req,res)
 {
   tiers = getTiers();
   res.send(tiers);
+});
+
+router.get("/getPoints",function(req,res)
+{
+  var username = "";
+  
+  if (req.sess.username === null || req.sess.username === undefined)
+  {
+    res.send({status:"[ERROR] No user set"});
+    return;
+  }
+  else
+  {
+    username = req.sess.username;
+  }
+
+  SidAPI.getMega(username,function(points)
+  {
+    res.send(points);
+    return;
+  });
 });
 
 router.post("/purchase/:tier/:weapon_class",function(req,res)
