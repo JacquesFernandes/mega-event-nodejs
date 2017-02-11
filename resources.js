@@ -2,31 +2,32 @@ var request = require("request");
 var Schemas = require("./Schemas");
 /* MISCELLANEOUS FUNCTIONS */
 
-function MiscFunctions()
-{
-  this.getCookie = function()
-  {
+function MiscFunctions(){
+  
+  this.getCookie = function(){
     console.log(request("/users/getCookie"));
   };
+
 }
 
 module.exports.MiscFunctions = MiscFunctions;
 /* PLAYER RELATED STUFF */
 
-function Weapon(dmg, rate, name, level)
-{
-  this.level = (level === undefined)? 0 : level ; //level of the gun
-  this.dmg = (dmg === undefined)? 1 : dmg ; // damage per hit
-  this.rate = (rate === undefined)? 1 : rate; // Rate of fire
-  this.name = (name === undefined)? "Some Gun" : name; // Name of Gun
-  this.t0_unlocked = true;
-  this.t1_unlocked = false;
-  this.t2_unlocked = false;
-  this.t3_unlocked = false;
+function Weapon(dmg, rate, name, level){
+
+	this.level = (level === undefined)? 0 : level ; //level of the gun
+	this.dmg = (dmg === undefined)? 1 : dmg ; // damage per hit
+	this.rate = (rate === undefined)? 1 : rate; // Rate of fire
+	this.name = (name === undefined)? "Some Gun" : name; // Name of Gun
+
+	this.t0_unlocked = true;
+	this.t1_unlocked = false;
+	this.t2_unlocked = false;
+	this.t3_unlocked = false;
+
 };
 
-function Player(player_name) // NOTE: any changes to be reflected in .toJson() as well
-{
+function Player(player_name){ // NOTE: any changes to be reflected in .toJson() as well
   //this.userid = (userid === undefined)? "LOLWUT" : userid;
   this.name = (player_name === undefined)? "N00B" : player_name;
   this.hp = 100;
@@ -41,7 +42,8 @@ function Player(player_name) // NOTE: any changes to be reflected in .toJson() a
   this.weapons.heavy = new Weapon(20,5,"Heavy Gun");
   this.weapons.sniper = new Weapon(30,1,"Sniper Guns");
 
-  this.schema = Schemas.playerSchema;/*{
+  this.schema = Schemas.playerSchema;
+  /*{
     //userid: String,
     username: String,
     hp: Number,
@@ -82,8 +84,8 @@ function Player(player_name) // NOTE: any changes to be reflected in .toJson() a
     }
   };*/
   /* METHODS */
-  this.toJSON = function()
-  {
+  this.toJSON = function(){
+	  
     ret = {
       //userid: this.userid,
       username: this.name,

@@ -11,8 +11,7 @@ var client_queue = []; //usernames
 var matches = []; //store {host:<host>,client:<client>} objects
 
 /* ROUTES */
-router.get("/",function(req,res)
-{
+router.get("/",function(req, res){
     if (req.sess.username === null || req.sess.username === undefined)
     {
         res.redirect("http://www.teknack.in");
@@ -137,50 +136,50 @@ module.exports = router;
 
 /*** Support methods ***/
 
-var getFightDetails = function(name)
-{
-    
+var getFightDetails = function(name){
 
-    playerModel.findOne({username:name},function(err, player)
-    {
+    playerModel.findOne({ username:name }, function(err, player){
+        
         var ret = {};
-        if (player !== undefined && player !== null)
-        {
-            //console.log(player);
+        if (player !== undefined && player !== null){
+            
             ret.username = player.username;
             ret.movement_speed = player.movement_speed;
             ret.hp = player.hp;
-            var weapons = player.weapons;//.toJSON()[0];
-            console.log("WEAPONS");console.log(weapons);
+
+            var weapons = player.weapons;
+
             ret.dmg = {
-            light: weapons.light.dmg,
-            heavy: weapons.heavy.dmg,
-            sniper: weapons.sniper.dmg
+                light: weapons.light.dmg,
+                heavy: weapons.heavy.dmg,
+                sniper: weapons.sniper.dmg
             };
             ret.attack_speed = {
-            light: weapons.light.rate,
-            heavy: weapons.heavy.rate,
-            sniper: weapons.sniper.rate
+                light: weapons.light.rate,
+                heavy: weapons.heavy.rate,
+                sniper: weapons.sniper.rate
             }
 
-            return(ret)
+            return(ret);
+
         }
-        else
-        {
-            console.log("PLAYER "+ name+ "Not found!");
+        else{
+
             return(false);
         }
+
     });
+
 };
 
 /*** EXPORTED FUNCTIONS ***/
 
-var getMatchSets = function()
-{
+var getMatchSets = function(){
+
     var simple_list = [];
 
-    _.each(matches,function(match)
-    {
+    _.each(matches,function(match){
+
         simple_list.push({
             client: {
                 username: match.client.username,
@@ -190,7 +189,9 @@ var getMatchSets = function()
                 username: match.host.username,
                 socket_id: undefined
             }
+            
         });
+
     });
 
     return(simple_list);

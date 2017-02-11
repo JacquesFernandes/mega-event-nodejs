@@ -1,11 +1,24 @@
 var socket = io();
 
+// getUsername
 socket.on('connect', function() {
-    socket.emit('idupdate', { 'type': 'host', 'id': socket.io.engine.id });
+    //
 });
 
 var player_username;
 var enemy_username;
+
+var player_sniper_damage;
+var player_light_damage;
+var player_heavy_damage;
+
+var enemy_sniper_damage;
+var enemy_light_damage;
+var enemy_heavy_damage;
+
+var fire_rate_light = 500;
+var fire_rate_heavy = 1500;
+var fire_rate_sniper = 3000; 
 
 var player_hp = 100;
 var enemy_hp = 100;
@@ -73,10 +86,6 @@ function init(){
 
     var player_next_respawn_time = 0;
     var enemy_next_respawn_time = 0;
-
-    var fire_rate_light = 500;
-    var fire_rate_heavy = 1500;
-    var fire_rate_sniper = 3000; 
 
     var next_fire_light = 0;
     var next_fire_heavy = 0;
