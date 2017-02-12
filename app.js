@@ -29,7 +29,7 @@ var db_password = "SwiggitySwooty";
 var db_name = "mega-event";
 var auth_connect_string = "mongodb://"+db_username+":"+db_password+"@localhost/"+db_name;
 var connect_string = "mongodb://localhost/"+db_name;
-mongoose.connect(connect_string);
+mongoose.connect(auth_connect_string);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -51,10 +51,9 @@ app.use("/dbtest", function(err,req,res)
 
 app.use(session({           // TODO : REMOVE DURING PRODUCTION!
   cookieName: "sess",
-  secret: "aslkdjalskdjad",
+  secret: "134klh389dbcbsldvn1mcbj",
   duration: 24 * 60 * 60 * 1000,
-  activeDuration: 1000 * 60 * 5,
-  username: "lolwut" // RESET IN users.js/setCookie
+  activeDuration: 1000 * 60 * 5 // RESET IN users.js/setCookie
 }));
 app.use("/checkCookie",function(req,res,next)
 {

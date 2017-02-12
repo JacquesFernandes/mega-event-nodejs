@@ -1,8 +1,20 @@
 var socket = io();
 
 socket.on('connect', function() {
-    
+    $.ajax({
+        url: '/game/updateSocketId',
+        type: 'POST',
+        data: {id: socket.io.engine.id},
+        dataType: 'json',
+        success: function(response){
+            if(response.msg === 'success'){
+                console.log('connected');
+            }
+        }
+    });    
 });
+
+var isIdUpdated = false;
 
 var player_username;
 var enemy_username;
@@ -24,9 +36,12 @@ $.ajax({
     success: function (response){
 
         player_username = response.username;
-        socket.emit('socketidupdate', { 'username': player_username });
 
     }   
+});
+
+socket.on('success', function(){
+    isIdUpdated = true;
 });
 
 $.ajax({
@@ -39,9 +54,9 @@ $.ajax({
         player_hp = response.client.hp;
         player_current_hp = response.client.hp;
 
-        fire_rate_light = response.client.attack_speed.light;
-        fire_rate_heavy = response.client.attack_speed.heavy;
-        fire_rate_sniper = response.client.attack_speed.sniper;
+        fire_rate_light = response.client.attack_speed.light * 1000;
+        fire_rate_heavy = response.client.attack_speed.heavy * 1000;
+        fire_rate_sniper = response.client.attack_speed.sniper * 1000;
         
         enemy_username = response.host.username;
         enemy_hp = response.host.hp;
