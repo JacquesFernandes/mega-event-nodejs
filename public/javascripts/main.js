@@ -2,11 +2,15 @@
 var game = new Phaser.Game(1280, 720, Phaser.CANVAS);
 
 var loading;
+var pltext;
+var ltext;
+var pointtext;
 var background;
 var button = [];
 var player;
 var leaderboard;
 var buttonback;
+var style;
 
 var bootState = function () {
     console.log('Booting phaser...');
@@ -69,12 +73,19 @@ gameState.prototype = {
 		/*Leaderboard Info*/
         
         leaderboard = game.add.graphics(0,0);
-        leaderboard.beginFill(0xff0000);
-        leaderboard.drawRect(game.world.centerX + 200,game.world.centerY - 50, game.world.centerX - 230,game.world.centerY + 20);
-        leaderboard.alpha = 0.5;
+        leaderboard.beginFill(0x000000);
+        leaderboard.drawRect(game.world.centerX + 100,game.world.centerY - 80, 500,game.world.centerY + 50);
+        leaderboard.alpha = 0.9;
         leaderboard.endFill();
         
-        $.get("/users/getLeaderBoard")
+        
+        ltext = game.add.text( game.world.centerX +250, game.world.centerY - 70, 'Leaderboard');
+        ltext.font = "Sans serif";
+        //pltext.height = '10px';
+        ltext.fill = "#FFFFFF";
+        /*pltext.anchor.set(0.5);*/
+        
+        //$.get("/users/getLeaderBoard");
         
         
         /**********************************************/
@@ -86,6 +97,16 @@ gameState.prototype = {
         player.alpha = 0.8;
         player.endFill();
         
+        pltext = game.add.text(game.world.centerX, 20, 'Username : ');
+        pltext.font = 'Sans serif';
+        pltext.fill = '#FFFFFF';
+        
+        pointtext = game.add.text(game.world.centerX *1.5, 20, 'Mega Points : ');
+        pointtext.font = 'Sans serif';
+        pointtext.fill = '#FFFFFF';
+        
+        pltext.anchor.set(0.5);
+        pointtext.anchor.set(0.5);
         
         /**********************************************/
         
@@ -115,6 +136,7 @@ gameState.prototype = {
         
         buttongroup.scale.setTo(1);
         /*********************************************/
+        
     },
     update: function (){
 
@@ -134,4 +156,3 @@ game.state.add('preloadState', preloadState);
 game.state.add('gameState', gameState);
 
 game.state.start('bootState');
-

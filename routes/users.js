@@ -77,17 +77,25 @@ router.get("/getPlayer/:name", function(req,res) // Getting the player details b
 router.get("/getPlayerInfo",function(req,res)
 {
   var name = req.sess.username;
-  playerModel.find({username:name}, function(err, players)
+  playerModel.findOne({username:name}, function(err, player)
   {
    
     if (players.length > 0)
     {
-      res.status(200).send(players);
+      var to_send = {};
+      SidAPI.getMega(player.username,function(points)
+      {
+        to_send.username = player.username;
+        to_send.megapoints = points;
+        res.send(to_send);
+        return;
+      });
     }
     else
     {
       res.status(200).send("No such player...");
       console.log("error: "+err);
+      return;
     }
   });
 });
