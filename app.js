@@ -51,10 +51,9 @@ app.use("/dbtest", function(err,req,res)
 
 app.use(session({           // TODO : REMOVE DURING PRODUCTION!
   cookieName: "sess",
-  secret: "aslkdjalskdjad",
+  secret: "134klh389dbcbsldvn1mcbj",
   duration: 24 * 60 * 60 * 1000,
-  activeDuration: 1000 * 60 * 5,
-  username: "lolwut" // RESET IN users.js/setCookie
+  activeDuration: 1000 * 60 * 5 // RESET IN users.js/setCookie
 }));
 app.use("/checkCookie",function(req,res,next)
 {
