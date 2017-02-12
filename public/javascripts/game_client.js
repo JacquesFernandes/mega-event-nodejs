@@ -1,7 +1,17 @@
 var socket = io();
 
 socket.on('connect', function() {
-    
+    $.ajax({
+        url: '/game/updateSocketId',
+        type: 'POST',
+        data: {id: socket.io.engine.id},
+        dataType: 'json',
+        success: function(response){
+            if(response.msg === 'success'){
+                console.log('connected');
+            }
+        }
+    });    
 });
 
 var isIdUpdated = false;
@@ -26,18 +36,6 @@ $.ajax({
     success: function (response){
 
         player_username = response.username;
-
-        $.ajax({
-            url: '/game/updateSocketId',
-            type: 'POST',
-            data: {username: player_username, id: socket.io.engine.id},
-            dataType: 'json',
-            success: function(response){
-                if(response.msg === 'success'){
-                    console.log('connected');
-                }
-            }
-        });
 
     }   
 });

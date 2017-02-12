@@ -209,7 +209,7 @@ module.exports = function(io){
     });
 
     router.post('/updateSocketId', function(req, res, next){
-        var username = req.body.username;
+        var username = req.sess.username;
         var socket_id = req.body.id;
 
         for(var i = 0 ; i < sessions.length ; i++){
