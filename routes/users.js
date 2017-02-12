@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-router.get("/getLeaderBoard",function(req,res)
+/*router.get("/getLeaderBoard",function(req,res)
 {
   playerModel.find({},function(err,players)
   {
@@ -34,6 +34,7 @@ router.get("/getLeaderBoard",function(req,res)
         });
       });
     });*/
+
 
     for (var i = 0; i < players.length; i++)
     {
@@ -55,7 +56,7 @@ router.get("/getLeaderBoard",function(req,res)
     return;
   });
 });
-
+*/
 router.get("/getPlayers",function(req,res) // Get *all* player's details
 {
   playerModel.find({},function(err, players)
