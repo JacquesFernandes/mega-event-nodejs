@@ -220,9 +220,11 @@ module.exports = function(io){
             for(var i = 0 ; i < sessions.length ; i++){
                 if(sessions[i].host === username){
                     sessions[i].host_id = socket_id;
+                    socket.emit('success');
                 }
                 else if(sessions[i].client === username){
                     sessions[i].client_id = socket_id;
+                    socket.emit('success');
                 }
             }
 

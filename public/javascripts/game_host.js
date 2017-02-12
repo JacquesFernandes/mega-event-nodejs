@@ -7,6 +7,8 @@ socket.on('connect', function() {
     //
 });
 
+var isIdUpdated = false;
+
 var player_username;
 var enemy_username;
 
@@ -38,9 +40,14 @@ $.ajax({
     success: function (response){
 
         player_username = response.username;
-        socket.emit('socketidupdate', { 'username': player_username });
-
+        while(!isIdUpdated){
+            socket.emit('socketidupdate', { 'username': player_username });
+        }
     }   
+});
+
+socket.on('success', function(){
+    isIdUpdated = true;
 });
 
 socket.on('getclientinfo', function(data){
