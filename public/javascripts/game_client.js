@@ -1,31 +1,59 @@
 var socket = io();
 
 socket.on('connect', function() {
-    socket.emit('idupdate', { 'type': 'client', 'id': socket.io.engine.id });
+    
 });
 
 var player_username;
 var enemy_username;
 
-var player_hp = 100;
-var enemy_hp = 100;
+var fire_rate_light;
+var fire_rate_heavy;
+var fire_rate_sniper;
 
-var player_current_hp = 100;
-var enemy_current_hp = 100;
+var player_hp;
+var enemy_hp;
+
+var player_current_hp;
+var enemy_current_hp;
 
 $.ajax({
-    url: '/game/new_game',
-    type: 'POST',
+    url: '/game/getusername',
+    type: 'GET',
     dataType: 'json',
     success: function (response){
 
-        player_username = response.client_name;
-        enemy_username = response.host_name;
+        player_username = response.username;
+        socket.emit('socketidupdate', { 'username': player_username });
+
+    }   
+});
+
+$.ajax({
+    url: '/game/getSessionDetails',
+    type: 'GET',
+    dataType: 'json',
+    success: function (response){
+
+        player_username = response.client.username;
+        player_hp = response.client.hp;
+        player_current_hp = response.client.hp;
+
+        fire_rate_light = response.client.attack_speed.light;
+        fire_rate_heavy = response.client.attack_speed.heavy;
+        fire_rate_sniper = response.client.attack_speed.sniper;
+        
+        enemy_username = response.host.username;
+        enemy_hp = response.host.hp;
+        enemy_current_hp = response.host.hp;
 
         init();
 
     }
+
 });
+
+var startGame = true;
 
 function init(){
 
@@ -104,8 +132,6 @@ function init(){
     var sniper_shoot_music;
     var heavy_shoot_music;
     var light_shoot_music;
-
-    var startGame = true;
 
     PLAYER_SHIP = function (game, username, x, y) {
         
@@ -348,10 +374,10 @@ function init(){
             game.load.spritesheet('loadout_sniper', '/assets/spritesheet/loadout_sniper.png', 400, 500, 8);
             game.load.spritesheet('loadout_light', '/assets/spritesheet/loadout_light.png', 400, 500, 8);
 
-            game.load.audio('background_music', 'assets/audio/background.mp3');
-            game.load.audio('sniper_shoot_music', 'assets/audio/sniper.mp3');
-            game.load.audio('heavy_shoot_music', 'assets/audio/heavy.mp3');
-            game.load.audio('light_shoot_music', 'assets/audio/light.mp3');
+            game.load.audio('background_music', '/assets/audio/background.mp3');
+            game.load.audio('sniper_shoot_music', '/assets/audio/sniper.mp3');
+            game.load.audio('heavy_shoot_music', '/assets/audio/heavy.mp3');
+            game.load.audio('light_shoot_music', '/assets/audio/light.mp3');
 
         },
         update: function () {
@@ -383,22 +409,22 @@ function init(){
 
             tilesprite = game.add.tileSprite(0, 0, 1920, 1920, 'space');
 
-            towersprite = game.add.sprite(1500, 1400, 'tower');
-            towersprite.anchor.setTo(0.5, 0.5);
-            towersprite.scale.setTo(2.5, 2.5);
-            towersprite.frame = 2;
+            // towersprite = game.add.sprite(1500, 1400, 'tower');
+            // towersprite.anchor.setTo(0.5, 0.5);
+            // towersprite.scale.setTo(2.5, 2.5);
+            // towersprite.frame = 2;
 
-            game.physics.enable(towersprite, Phaser.Physics.ARCADE);
-            towersprite.body.immovable = true;
-            towersprite.body.moves = false;
+            // game.physics.enable(towersprite, Phaser.Physics.ARCADE);
+            // towersprite.body.immovable = true;
+            // towersprite.body.moves = false;
 
-            towersprite_enemy = game.add.sprite(300, 400, 'tower');
-            towersprite_enemy.anchor.setTo(0.5, 0.5);
-            towersprite_enemy.scale.setTo(2.5, 2.5);
+            // towersprite_enemy = game.add.sprite(300, 400, 'tower');
+            // towersprite_enemy.anchor.setTo(0.5, 0.5);
+            // towersprite_enemy.scale.setTo(2.5, 2.5);
             
-            game.physics.enable(towersprite_enemy, Phaser.Physics.ARCADE);
-            towersprite_enemy.body.immovable = true;
-            towersprite_enemy.body.moves = false;
+            // game.physics.enable(towersprite_enemy, Phaser.Physics.ARCADE);
+            // towersprite_enemy.body.immovable = true;
+            // towersprite_enemy.body.moves = false;
             
 
             player = new PLAYER_SHIP(game, player_username, player_spawn_x, player_spawn_y);
@@ -560,29 +586,29 @@ function init(){
                 bullet.kill();
             });
 
-            game.physics.arcade.overlap( player_light_bullets_group, towersprite, function(tower, bullet){
-                bullet.kill();
-            });
+            // game.physics.arcade.overlap( player_light_bullets_group, towersprite, function(tower, bullet){
+            //     bullet.kill();
+            // });
 
-            game.physics.arcade.overlap( player_heavy_bullets_group, towersprite, function(tower, bullet){
-                bullet.kill();
-            });
+            // game.physics.arcade.overlap( player_heavy_bullets_group, towersprite, function(tower, bullet){
+            //     bullet.kill();
+            // });
 
-            game.physics.arcade.overlap( player_sniper_bullets_group, towersprite, function(tower, bullet){
-                bullet.kill();
-            });
+            // game.physics.arcade.overlap( player_sniper_bullets_group, towersprite, function(tower, bullet){
+            //     bullet.kill();
+            // });
 
-            game.physics.arcade.overlap( enemy_light_bullets_group, towersprite, function(tower, bullet){
-                bullet.kill();
-            });
+            // game.physics.arcade.overlap( enemy_light_bullets_group, towersprite, function(tower, bullet){
+            //     bullet.kill();
+            // });
 
-            game.physics.arcade.overlap( enemy_heavy_bullets_group, towersprite, function(tower, bullet){
-                bullet.kill();
-            });
+            // game.physics.arcade.overlap( enemy_heavy_bullets_group, towersprite, function(tower, bullet){
+            //     bullet.kill();
+            // });
 
-            game.physics.arcade.overlap( enemy_sniper_bullets_group, towersprite, function(tower, bullet){
-                bullet.kill();
-            });
+            // game.physics.arcade.overlap( enemy_sniper_bullets_group, towersprite, function(tower, bullet){
+            //     bullet.kill();
+            // });
             
             if(game.input.keyboard.isDown(Phaser.Keyboard.W)){
                 input_info.input_up = true;
@@ -915,6 +941,16 @@ function init(){
         updateEnemyHealthbar();
     });
 
+    socket.on('gameover', function(){
+        alert('Game Over!');
+        window.location = '/';
+    });
+
+    socket.on('playerdisconnection', function(){
+        alert('The other player is disconnected. You are winner!');
+        window.location = '/';
+    });
+
     game.state.add('bootState', bootState);
     game.state.add('preloadState', preloadState);
     game.state.add('gameState', gameState);
@@ -922,3 +958,7 @@ function init(){
     game.state.start('bootState');
 
 }
+
+socket.on('startGame', function(){
+    startGame = true;
+});
