@@ -13,8 +13,8 @@ var _ = require("underscore");
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
-
-/*router.get("/getLeaderBoard",function(req,res)
+/*
+router.get("/getLeaderBoard",function(req,res)
 {
   playerModel.find({},function(err,players)
   {
@@ -33,7 +33,7 @@ router.get('/', function(req, res, next) {
           megapoints: points
         });
       });
-    });*/
+    });//
 
 
     for (var i = 0; i < players.length; i++)
@@ -55,8 +55,8 @@ router.get('/', function(req, res, next) {
     res.send(leaderboard_items.slice(0,5));
     return;
   });
-});
-*/
+});*/
+
 router.get("/getPlayers",function(req,res) // Get *all* player's details
 {
   playerModel.find({},function(err, players)
