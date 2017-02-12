@@ -54,9 +54,9 @@ $.ajax({
         player_hp = response.client.hp;
         player_current_hp = response.client.hp;
 
-        fire_rate_light = response.client.attack_speed.light;
-        fire_rate_heavy = response.client.attack_speed.heavy;
-        fire_rate_sniper = response.client.attack_speed.sniper;
+        fire_rate_light = response.client.attack_speed.light * 1000;
+        fire_rate_heavy = response.client.attack_speed.heavy * 1000;
+        fire_rate_sniper = response.client.attack_speed.sniper * 1000;
         
         enemy_username = response.host.username;
         enemy_hp = response.host.hp;
