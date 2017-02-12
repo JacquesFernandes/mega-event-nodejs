@@ -11,6 +11,12 @@ var player;
 var leaderboard;
 var buttonback;
 var style;
+var uname;var upoints;
+var unametext; var upointstext;
+var leadertext;
+
+var temp;
+
 
 var bootState = function () {
     console.log('Booting phaser...');
@@ -70,7 +76,7 @@ gameState.prototype = {
     create: function () {
 		background = game.add.sprite(0, 0, 'menubackground');
 		
-		/*Leaderboard Info*/
+		/*Leaderboard Info
         
         leaderboard = game.add.graphics(0,0);
         leaderboard.beginFill(0x000000);
@@ -80,12 +86,18 @@ gameState.prototype = {
         
         
         ltext = game.add.text( game.world.centerX +250, game.world.centerY - 70, 'Leaderboard');
-        ltext.font = "Sans serif";
-        //pltext.height = '10px';
+        ltext.font = "Courier New";
+        //pltext.height = '10';
         ltext.fill = "#FFFFFF";
-        /*pltext.anchor.set(0.5);*/
         
-        //$.get("/users/getLeaderBoard");
+        $.get("/users/getLeaderBoard", function(data,status){
+			console.log('Leader data : ' + data[0]);
+			
+			console.log('Leader stat : '+status);
+		});
+	
+		leaderText = ['First','Second','Third','Fourth','Fifth'];
+		displayleader(leaderText);*/
         
         
         /**********************************************/
@@ -93,20 +105,35 @@ gameState.prototype = {
         
         player = game.add.graphics(0,0);
         player.beginFill(0x1eaac2);
-        player.drawRect(0 ,0 , game.width ,80);
+        player.drawRect(0 ,0 , game.width ,70);
         player.alpha = 0.8;
         player.endFill();
         
-        pltext = game.add.text(game.world.centerX, 20, 'Username : ');
-        pltext.font = 'Sans serif';
+        pltext = game.add.text(game.world.centerX -40, 15, 'Username: ');
+        pltext.font = 'Courier New';
         pltext.fill = '#FFFFFF';
         
-        pointtext = game.add.text(game.world.centerX *1.5, 20, 'Mega Points : ');
-        pointtext.font = 'Sans serif';
+        
+        $.get('users/getPlayerInfo', function(data, status){
+            console.log('Player data : '+ data);
+            if(status == 400){
+				uname = " -- ";
+			}
+			else{
+				uname = data;
+			}
+            displayname(uname);
+            console.log('Player stat  :' + status);
+        });
+        displayname('Test');
+        displaypoints("400");
+        
+        
+        pointtext = game.add.text(game.world.centerX *1.5, 15, 'M Points: ');
+        pointtext.font = 'Courier New';
         pointtext.fill = '#FFFFFF';
         
-        pltext.anchor.set(0.5);
-        pointtext.anchor.set(0.5);
+        
         
         /**********************************************/
         
@@ -149,6 +176,28 @@ gameState.prototype = {
 function actionOnClick(){
     location.href = location.href+'game';
     /*console.log(location.href);*/
+}
+function displayleader(leadertext){
+	for(var i =0;i<5;++i){
+		temp = game.add.text( game.world.centerX +160, game.world.centerY - 70 + (i*50+50), leadertext[i]);
+        temp.font = "Courier New";
+        temp.fill = "#FFFFFF";
+	}
+}
+function displayname(uname){
+	if( uname == 'No such player...'){
+			unametext = game.add.text(game.world.centerX + 110, 15, ' -- ');
+	}
+	else{
+		unametext = game.add.text(game.world.centerX + 110, 15, uname);
+	}
+	unametext.font = 'Courier New';
+	unametext.fill = '#FFFFFF';	
+}
+function displaypoints(upoints){
+	upoints = game.add.text(game.world.centerX *1.5 + 150, 15, upoints);
+	upoints.font = 'Courier New';
+	upoints.fill = '#FFFFFF';
 }
 
 game.state.add('bootState', bootState);

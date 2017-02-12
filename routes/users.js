@@ -51,7 +51,7 @@ router.get("/getPlayers",function(req,res) // Get *all* player's details
     }
     else
     {
-      res.status(404).send("No players present");
+      res.status(400).send("No players present");
     }
   });
 });
@@ -80,7 +80,7 @@ router.get("/getPlayerInfo",function(req,res)
   playerModel.findOne({username:name}, function(err, player)
   {
    
-    if (players.length > 0)
+    if (player.length > 0)
     {
       var to_send = {};
       SidAPI.getMega(player.username,function(points)
@@ -93,7 +93,7 @@ router.get("/getPlayerInfo",function(req,res)
     }
     else
     {
-      res.status(200).send("No such player...");
+      res.status(400).send("No such player...");
       console.log("error: "+err);
       return;
     }

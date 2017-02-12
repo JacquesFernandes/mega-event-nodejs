@@ -60,6 +60,7 @@ shopState.prototype = {
 
     preload: function () {
 		game.load.image('sidebar', '/assets/images/shopbackground.jpg');
+		game.load.spritesheet('homebutton', '/assets/buttons/home.png',30,30);
         game.load.spritesheet('light-0', '/assets/buttons/light_button_0.png', 140, 80);
         game.load.spritesheet('light-1', '/assets/buttons/light_button_1.png', 140, 80);
         game.load.spritesheet('light-2', '/assets/buttons/light_button_2.png', 140, 80);
@@ -88,10 +89,21 @@ shopState.prototype = {
         
         buttongroup = game.add.group();
         /*DELETE THIS*/
+        $.get('shop/getPoints', function(data,status){
+			console.log('Points : '+data);
+			displayp(data);
+		});
         $.get('shop/getUnlocked', function(data, status){
             unlockdata = data;
+            console.log('Initial check...');
             initialcheck();
         });
+        
+        /*Home button*/
+        game.add.button(1260, 20, 'homebutton', function(){
+			console.log('Home');
+			window.history.back();
+		}, this, 0);
         
         /*Buttons of Tiers*/
         //Tier 0
@@ -99,7 +111,7 @@ shopState.prototype = {
             console.log('Tier 0 light');
             button[0].input.enabled = false;
             check(button[0]);
-            $.post('shop/purchase/t0/light',{
+            $.post('shop/addNewMod',{
                 tier: 't0',
                 class: 'light'
             }, 
@@ -111,7 +123,7 @@ shopState.prototype = {
             console.log('Tier 0 heavy');
             button[1].input.enabled = false;
             check(button[1]);
-            $.post('shop/purchase/t0/heavy',{
+            $.post('shop/addNewMod',{
                 tier: 't0',
                 class: 'heavy'
             }, 
@@ -123,7 +135,7 @@ shopState.prototype = {
             console.log('Tier 0 sniper');
             button[2].input.enabled = false;
             check(button[2]);
-            $.post('shop/purchase/t0/sniper',{
+            $.post('shop/addNewMod',{
                 tier: 't0',
                 class: 'sniper'
             }, 
@@ -137,7 +149,7 @@ shopState.prototype = {
             console.log('Tier 1 light');
             //button[3].input.enabled = false;
             check(button[3]);
-            $.post('shop/purchase/t1/light',{
+            $.post('shop/addNewMod',{
                 tier: 't1',
                 class: 'light'
             }, 
@@ -149,7 +161,7 @@ shopState.prototype = {
             console.log('Tier 1 heavy');
             button[4].input.enabled = false;
             check(button[4]);
-            $.post('shop/purchase/t1/heavy',{
+            $.post('shop/addNewMod',{
                 tier: 't1',
                 class: 'heavy'
             }, 
@@ -161,7 +173,7 @@ shopState.prototype = {
             console.log('Tier 1 sniper');
             button[5].input.enabled = false;
             check(button[5]);
-            $.post('shop/purchase/t1/sniper',{
+            $.post('shop/addNewMod',{
                 tier: 't1',
                 class: 'sniper'
             }, 
@@ -175,7 +187,7 @@ shopState.prototype = {
             console.log('Tier 2 light');
             //button[6].input.enabled = false;
             check(button[6]);
-            $.post('shop/purchase/t2/light',{
+            $.post('shop/addNewMod',{
                 tier: 't2',
                 class: 'light'
             }, 
@@ -187,7 +199,7 @@ shopState.prototype = {
             console.log('Tier 2 heavy');
             button[7].input.enabled = false;
             check(button[7]);
-            $.post('shop/purchase/t2/heavy',{
+            $.post('shop/addNewMod',{
                 tier: 't2',
                 class: 'heavy'
             }, 
@@ -199,7 +211,7 @@ shopState.prototype = {
             console.log('Tier 2 sniper');
             button[8].input.enabled = false;
             check(button[8]);
-            $.post('shop/purchase/t2/sniper',{
+            $.post('shop/addNewMod',{
                 tier: 't2',
                 class: 'sniper'
             }, 
@@ -213,7 +225,7 @@ shopState.prototype = {
             console.log('Tier 3 light');
             //button[9].input.enabled = false;
             check(button[9]);
-            $.post('shop/purchase/t3/light',{
+            $.post('shop/addNewMod',{
                 tier: 't3',
                 class: 'light'
             }, 
@@ -225,7 +237,7 @@ shopState.prototype = {
             console.log('Tier 3 heavy');
             button[10].input.enabled = false;
             check(button[10]);
-            $.post('shop/purchase/t3/heavy',{
+            $.post('shop/addNewMod',{
                 tier: 't3',
                 class: 'heavy'
             }, 
@@ -237,7 +249,7 @@ shopState.prototype = {
             console.log('Tier 3 sniper');
             button[11].input.enabled = false;
             check(button[11]);
-            $.post('shop/purchase/t3/sniper',{
+            $.post('shop/addNewMod',{
                 tier: 't3',
                 class: 'sniper'
             }, 
@@ -345,7 +357,11 @@ function checkunlock(bObject){
         return true;
     }
 }
-
+function displayp(upoints){
+	upoints = game.add.text(game.world.centerX *1.5 + 130, 15, 'M Points : ' + upoints);
+	upoints.font = 'Courier New';
+	upoints.fill = '#FFFFFF';
+}
 
 game.state.add('bootState', bootState);
 game.state.add('preloadState', preloadState);
