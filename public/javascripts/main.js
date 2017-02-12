@@ -76,7 +76,7 @@ gameState.prototype = {
     create: function () {
 		background = game.add.sprite(0, 0, 'menubackground');
 		
-		/*Leaderboard Info*/
+		/*Leaderboard Info
         
         leaderboard = game.add.graphics(0,0);
         leaderboard.beginFill(0x000000);
@@ -89,7 +89,6 @@ gameState.prototype = {
         ltext.font = "Courier New";
         //pltext.height = '10';
         ltext.fill = "#FFFFFF";
-        /*pltext.anchor.set(0.5);*/
         
         $.get("/users/getLeaderBoard", function(data,status){
 			console.log('Leader data : ' + data[0]);
@@ -98,7 +97,7 @@ gameState.prototype = {
 		});
 	
 		leaderText = ['First','Second','Third','Fourth','Fifth'];
-		displayleader(leaderText);
+		displayleader(leaderText);*/
         
         
         /**********************************************/
