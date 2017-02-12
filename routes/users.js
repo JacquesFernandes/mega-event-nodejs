@@ -27,6 +27,7 @@ router.get("/getLeaderBoard",function(req,res)
 
       SidAPI.getMega(player.username,function(points)
       {
+        console.log(player.username+ " :: "+points);
         leaderboard_items.push({
           username: player.username,
           megapoints: points
@@ -195,8 +196,8 @@ router.post("/transferPoints/:winner/:loser",function(req,res)
       {
           var loser_points = Number(points);
           console.log("Winner points: "+winner_points+" :: Loser Points: "+loser_points);
-          loser_points = Math.floor(0.9 * Number(loser_points);
-          winner_points = Math.floor(Number(winner_points) + (0.1 * Number(loser_points));
+          loser_points = Math.floor(0.9 * Number(loser_points));
+          winner_points = Math.floor(Number(winner_points) + (0.1 * Number(loser_points)));
           console.log("Winner: "+winner);
           console.log("New Winner points: "+winner_points+" :: New Loser Points: "+loser_points);
           res.send(" :: Finshed transfer of points");
