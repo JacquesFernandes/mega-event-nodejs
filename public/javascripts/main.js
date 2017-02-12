@@ -15,7 +15,7 @@ var uname;var upoints;
 var unametext; var upointstext;
 var leadertext;
 
-var temp;
+var temp;var temp2;
 
 
 var bootState = function () {
@@ -76,7 +76,7 @@ gameState.prototype = {
     create: function () {
 		background = game.add.sprite(0, 0, 'menubackground');
 		
-		/*Leaderboard Info
+		/*Leaderboard Info*/
         
         leaderboard = game.add.graphics(0,0);
         leaderboard.beginFill(0x000000);
@@ -87,15 +87,15 @@ gameState.prototype = {
         
         ltext = game.add.text( game.world.centerX +250, game.world.centerY - 70, 'Leaderboard');
         ltext.font = "Courier New";
-        //pltext.height = '10';
         ltext.fill = "#FFFFFF";
         
         $.get("/users/getLeaderBoard", function(data,status){
 			console.log('Leader data : ' + data[0]);
 			
 			console.log('Leader stat : '+status);
+			displayleader(data);
 		});
-	
+	/*
 		leaderText = ['First','Second','Third','Fourth','Fifth'];
 		displayleader(leaderText);*/
         
@@ -120,13 +120,15 @@ gameState.prototype = {
 				uname = " -- ";
 			}
 			else{
-				uname = data;
+				uname = data['username'];
+				upoints = data['megapoints'];
 			}
             displayname(uname);
+            displaypoints(upoints);
             console.log('Player stat  :' + status);
         });
-        displayname('Test');
-        displaypoints("400");
+        displayname('Null');
+        //displaypoints("400");
         
         
         pointtext = game.add.text(game.world.centerX *1.5, 15, 'M Points: ');
@@ -179,7 +181,11 @@ function actionOnClick(){
 }
 function displayleader(leadertext){
 	for(var i =0;i<5;++i){
-		temp = game.add.text( game.world.centerX +160, game.world.centerY - 70 + (i*50+50), leadertext[i]);
+		temp = game.add.text( game.world.centerX +160, game.world.centerY - 70 + (i*50+50), leadertext[i]['username']);
+        temp.font = "Courier New";
+        temp.fill = "#FFFFFF";
+        
+        temp = game.add.text( game.world.centerX +360, game.world.centerY - 70 + (i*50+50), leadertext[i]['megapoints']);
         temp.font = "Courier New";
         temp.fill = "#FFFFFF";
 	}
@@ -195,9 +201,9 @@ function displayname(uname){
 	unametext.fill = '#FFFFFF';	
 }
 function displaypoints(upoints){
-	upoints = game.add.text(game.world.centerX *1.5 + 150, 15, upoints);
-	upoints.font = 'Courier New';
-	upoints.fill = '#FFFFFF';
+	upointstext = game.add.text(game.world.centerX *1.5 + 150, 15, upoints);
+	upointstext.font = 'Courier New';
+	upointstext.fill = '#FFFFFF';
 }
 
 game.state.add('bootState', bootState);
