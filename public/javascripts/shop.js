@@ -60,7 +60,7 @@ shopState.prototype = {
 
     preload: function () {
 		game.load.image('sidebar', '/assets/images/shopbackground.jpg');
-		game.load.spritesheet('homebutton', '/assets/buttons/home.png',30,30);
+		game.load.spritesheet('homebutton', '/assets/buttons/home.png',512, 512);
         game.load.spritesheet('light-0', '/assets/buttons/light_button_0.png', 140, 80);
         game.load.spritesheet('light-1', '/assets/buttons/light_button_1.png', 140, 80);
         game.load.spritesheet('light-2', '/assets/buttons/light_button_2.png', 140, 80);
@@ -100,11 +100,11 @@ shopState.prototype = {
         });
         
         /*Home button*/
-        homebutton = game.add.button(230, 35, 'homebutton', function(){
+        homebutton = game.add.button(130, 35, 'homebutton', function(){
 			console.log('Home');
 			window.history.back();
 		}, this, 0);
-		homebutton.scale.setTo(2);
+		homebutton.scale.setTo(0.4);
         
         /*Buttons of Tiers*/
         //Tier 0
@@ -350,6 +350,7 @@ function checkunlock(bObject){
             button[x].tint = 0xFFFFFF;
             $.get('shop/getPoints', function(data,status){
 				console.log('Points : '+data);
+				upoints.kill();
 				displayp(data);
 			});
             return true;
