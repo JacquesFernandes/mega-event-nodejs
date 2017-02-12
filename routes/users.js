@@ -188,7 +188,7 @@ router.post("/transferPoints/:winner/:loser",function(req,res)
   var loser = req.params.loser;
   SidAPI.getMega(winner,function(points)
   {
-      var winner_points = points;
+      var winner_points = Number(points);
 
       SidAPI.getMega(loser, function(points)
       {
