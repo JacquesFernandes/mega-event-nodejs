@@ -7,6 +7,7 @@ var button = [];
 var buttongroup;
 var unlockdata = [];
 var homebutton;
+var temp;
 
 var ajaxRequest;
 var jsn = {'light-0':0,'heavy-0':1,'sniper-0':2,'light-1':3,'heavy-1':4,'sniper-1':5,'light-2':6,'heavy-2':7,'sniper-2':8,'light-3':9,'heavy-3':10,'sniper-3':11}
@@ -364,7 +365,12 @@ function checkunlock(bObject){
     }
 }
 function displayp(upoints){
-	upoints = game.add.text(game.world.centerX - 30, 35, 'Points : ' + upoints);
+	temp = game.add.graphics(0,0);
+	temp.beginFill(0x000000);
+	temp.drawRect(game.world.centerX - 55,30, 100,30);
+	temp.alpha = 0.9;
+	temp.endFill();
+	upoints = game.add.text(game.world.centerX - 50, 35, 'Points : ' + upoints);
 	upoints.font = 'Courier New';
 	upoints.fill = '#FFFFFF';
 }
