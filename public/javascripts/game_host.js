@@ -40,9 +40,7 @@ $.ajax({
     success: function (response){
 
         player_username = response.username;
-        while(!isIdUpdated){
-            socket.emit('socketidupdate', { 'username': player_username });
-        }
+        socket.emit('socketidupdate', { 'username': player_username });
     }   
 });
 
