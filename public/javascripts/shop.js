@@ -100,7 +100,7 @@ shopState.prototype = {
         });
         
         /*Home button*/
-        game.add.button(1260, 20, 'homebutton', function(){
+        homebutton = game.add.button(game.world.centerX * 1.5 + 130, 25, 'homebutton', function(){
 			console.log('Home');
 			window.history.back();
 		}, this, 0);
@@ -347,6 +347,10 @@ function checkunlock(bObject){
         var rVal = confirm("Confirm purchase?");
         if(rVal == true){
             button[x].tint = 0xFFFFFF;
+            $.get('shop/getPoints', function(data,status){
+				console.log('Points : '+data);
+				displayp(data);
+			});
             return true;
         }
         else{
@@ -358,7 +362,7 @@ function checkunlock(bObject){
     }
 }
 function displayp(upoints){
-	upoints = game.add.text(game.world.centerX *1.5 + 130, 15, 'M Points : ' + upoints);
+	upoints = game.add.text(game.world.centerX + 130, 25, 'Points : ' + upoints);
 	upoints.font = 'Courier New';
 	upoints.fill = '#FFFFFF';
 }
