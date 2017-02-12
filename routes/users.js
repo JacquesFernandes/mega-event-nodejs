@@ -95,6 +95,7 @@ router.get("/getPlayerInfo",function(req,res)
     {
       res.status(400).send("No such player...");
       console.log("error: "+err);
+      console.log(player);
       return;
     }
   });
