@@ -127,7 +127,7 @@ gameState.prototype = {
             displaypoints(upoints);
             console.log('Player stat  :' + status);
         });
-        displayname('Null');
+        //displayname('Null');
         //displaypoints("400");
         
         
