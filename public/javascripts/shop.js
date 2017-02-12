@@ -88,6 +88,10 @@ shopState.prototype = {
         
         buttongroup = game.add.group();
         /*DELETE THIS*/
+        $.get('shop/getPoints', function(data,status){
+			console.log('Points : '+data);
+			displayp(data);
+		});
         $.get('shop/getUnlocked', function(data, status){
             unlockdata = data;
             initialcheck();
@@ -345,7 +349,11 @@ function checkunlock(bObject){
         return true;
     }
 }
-
+function displayp(upoints){
+	upoints = game.add.text(game.world.centerX *1.5 + 130, 15, 'M Points : ' + upoints);
+	upoints.font = 'Courier New';
+	upoints.fill = '#FFFFFF';
+}
 
 game.state.add('bootState', bootState);
 game.state.add('preloadState', preloadState);
