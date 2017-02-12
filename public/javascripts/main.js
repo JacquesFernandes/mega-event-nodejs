@@ -126,7 +126,7 @@ gameState.prototype = {
             displayname(uname);
             console.log('Player stat  :' + status);
         });
-        displayname('Nischal');
+        displayname('Test');
         displaypoints("400");
         
         
