@@ -29,7 +29,7 @@ var db_password = "SwiggitySwooty";
 var db_name = "mega-event";
 var auth_connect_string = "mongodb://"+db_username+":"+db_password+"@localhost/"+db_name;
 var connect_string = "mongodb://localhost/"+db_name;
-mongoose.connect(auth_connect_string);
+mongoose.connect(connect_string);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
