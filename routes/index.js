@@ -14,22 +14,36 @@ router.get('/', function (req, res, next){
     }
 
     //check if player exists, otherwise make and store
-    playerModel.find({username: req.sess.username}, function(err,player){
+    playerModel.findOne({username: req.sess.username}, function(err,player)
+    {
+        if (err)
+        {
+            console.log("ERROR FROM index.js");
+            console.log(err);
+        }
 
-        if (player === null || player === undefined){
+        if (player === null || player === undefined)
+        {
 
             var new_player = new Player(req.sess.username);
-            var player_instance = new playerModel(player.toJSON());
+            var player_instance = new playerModel(new_player.toJSON());
 
             //console.log(player_instance);
             player_instance.save();
 
             console.log("[NOTE] New player "+req.sess.username);
-    
+            
+            res.render('index');
+            return;
+        }
+        else
+        {
+            console.log(player);
+            console.log("[NOTE] Returning player "+req.sess.username);
+            res.render('index');
+            return;
         }
     });
-
-    res.render('index');
 
 });
 

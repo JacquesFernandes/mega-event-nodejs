@@ -6,7 +6,8 @@ module.exports = function(io){
     var _ = require('underscore');
     var Schemas = require("../Schemas");
     var playerModel = Schemas.PlayerModel;
-    
+    var SidAPI = require("../request-api");
+
     var sessions = [];
 
     router.get('/', function (req, res, next){
@@ -335,6 +336,11 @@ module.exports = function(io){
                     var winner = sessions[i].client;
                     var loser = sessions[i].host;
                     // mega point calculations here
+                    console.log(" :: HOST DISCONNECT :: STARTING TRANSFER :: ");
+                    request({uri:"http://localhost:3011/users/transferPoints/"+winner+"/"+loser, method:"POST"},function(err,response, body)
+                    {
+                        console.log(" :: STATUS: "+body);
+                    });
                     
                     sessions = _.without(sessions, _.findWhere(sessions, {'host_id': disconnectedplayerid}));
                     break;
@@ -351,6 +357,14 @@ module.exports = function(io){
                     var winner = sessions[i].host;
                     var loser = sessions[i].client;
                     // mega point calculations here
+                    
+                    console.log(" :: CLIENT DISCONNECT :: STARTING TRANSFER :: ");
+                    request({uri:"http://localhost:3011/users/transferPoints/"+winner+"/"+loser, method:"POST"},function(err,response, body)
+                    {
+                        console.log(" :: STATUS: "+body);
+                    });
+
+                    //mega point calculations END
 
                     sessions = _.without(sessions, _.findWhere(sessions, {'client_id': disconnectedplayerid}));
                     break;
@@ -367,6 +381,12 @@ module.exports = function(io){
             var loser = data.loser;
 
             // mega point calculations here
+            console.log(" :: GAME OVER :: STARTING TRANSFER :: ");
+            request({uri:"http://localhost:3011/users/transferPoints/"+winner+"/"+loser, method:"POST"},function(err,response, body)
+            {
+                console.log(" :: STATUS: "+body);
+            });
+
 
             for(var i = 0 ; i < sessions.length ; i++){
                 if(sessions[i].host === winner){
