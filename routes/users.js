@@ -80,7 +80,7 @@ router.get("/getPlayerInfo",function(req,res)
   playerModel.findOne({username:name}, function(err, player)
   {
    
-    if (player.length > 0)
+    if (player !== null && player !== undefined)
     {
       var to_send = {};
       SidAPI.getMega(player.username,function(points)
