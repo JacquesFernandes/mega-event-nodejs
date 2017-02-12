@@ -249,9 +249,7 @@ module.exports = function(io){
             for(var i = 0 ; i < sessions.length ; i++){
                 if(sessions[i].client_id === socket.id){
                     var host_socket_id = sessions[i].host_id;
-                    console.log(host_socket_id);
                     if(io.sockets.connected[host_socket_id]){
-                        console.log('worked');
                         io.sockets.connected[host_socket_id].emit('newClientInput', data);
                     }
 
