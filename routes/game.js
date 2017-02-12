@@ -208,27 +208,26 @@ module.exports = function(io){
         res.render('game_client');
     });
 
+    router.post('/updateSocketId', function(req, res, next){
+        var username = req.body.username;
+        var socket_id = req.body.id;
+
+        for(var i = 0 ; i < sessions.length ; i++){
+            if(sessions[i].host === username){
+                sessions[i].host_id = socket_id;
+                console.log(sessions);
+            }
+            else if(sessions[i].client === username){
+                sessions[i].client_id = socket_id;
+                console.log(sessions);
+            }
+        }
+        res.send({'msg':'success'});
+    });
+
     io.on('connection', function (socket){
         
         console.log(socket.id+' connected!');
-
-        socket.on('socketidupdate', function(data){
-
-            var username = data.username;
-            var socket_id = socket.id;
-
-            for(var i = 0 ; i < sessions.length ; i++){
-                if(sessions[i].host === username){
-                    sessions[i].host_id = socket_id;
-                    socket.emit('success');
-                }
-                else if(sessions[i].client === username){
-                    sessions[i].client_id = socket_id;
-                    socket.emit('success');
-                }
-            }
-
-        });
 
         socket.on('playerPositionData', function(data){
 

@@ -24,8 +24,21 @@ $.ajax({
     type: 'GET',
     dataType: 'json',
     success: function (response){
+
         player_username = response.username;
-        socket.emit('socketidupdate', { 'username': player_username });
+
+        $.ajax({
+            url: '/game/updateSocketId',
+            type: 'POST',
+            data: {username: player_username, id: socket.io.engine.id},
+            dataType: 'json',
+            success: function(response){
+                if(response.msg === 'success'){
+                    console.log('connected');
+                }
+            }
+        });
+
     }   
 });
 
@@ -359,8 +372,6 @@ function init(){
 
         preload: function () {
 
-            socket.emit('socketidupdate', { 'username': player_username });
-
             loading = game.add.sprite(700, 300, 'loading');
             loading.anchor.setTo(0.5, 0.5);
 
@@ -388,8 +399,6 @@ function init(){
         },
         update: function () {
 
-            socket.emit('socketidupdate', { 'username': player_username });
- 
             if(startGame){
                 game.state.start('gameState');
             }
