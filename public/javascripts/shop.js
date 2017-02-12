@@ -6,6 +6,7 @@ var sidebar;
 var button = [];
 var buttongroup;
 var unlockdata = [];
+var homebutton;
 
 var ajaxRequest;
 var jsn = {'light-0':0,'heavy-0':1,'sniper-0':2,'light-1':3,'heavy-1':4,'sniper-1':5,'light-2':6,'heavy-2':7,'sniper-2':8,'light-3':9,'heavy-3':10,'sniper-3':11}
@@ -248,6 +249,10 @@ shopState.prototype = {
         
         /*Ajax format*/
         /* /shop/purchase/tier(t0 --> t3)/class (light/ heavy/ sniper)*/
+        
+        /*homebutton = game.add.button(1260, 20, 'homebutton', function(){
+            window.history.back();
+        }, this, 1, 0 ,2);*/
         
         
         /***************************/
