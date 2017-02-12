@@ -41,6 +41,7 @@ $.ajax({
 
         player_username = response.username;
         socket.emit('socketidupdate', { 'username': player_username });
+
     }   
 });
 
@@ -432,6 +433,8 @@ function init(){
 
         preload: function () {
 
+            socket.emit('socketidupdate', { 'username': player_username });
+
             loading = game.add.sprite(700, 300, 'loading');
             loading.anchor.setTo(0.5, 0.5);
 
@@ -461,6 +464,8 @@ function init(){
         },
         update: function () {
 
+            socket.emit('socketidupdate', { 'username': player_username });
+            
             if(startGame){
                 game.state.start('gameState');
             }
