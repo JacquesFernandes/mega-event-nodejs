@@ -51,7 +51,7 @@ router.get("/getPlayers",function(req,res) // Get *all* player's details
     }
     else
     {
-      res.status(404).send("No players present");
+      res.status(400).send("No players present");
     }
   });
 });
