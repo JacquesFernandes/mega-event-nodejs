@@ -89,7 +89,7 @@ gameState.prototype = {
         ltext.font = "Courier New";
         ltext.fill = "#FFFFFF";
         
-        $.get("/users/getLeaderBoard", function(data,status){
+        $.get("users/getLeaderBoard", function(data,status){
 			console.log('Leader data : ' + data[0]);
 			
 			console.log('Leader stat : '+status);
