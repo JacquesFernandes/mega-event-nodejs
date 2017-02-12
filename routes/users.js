@@ -21,7 +21,7 @@ router.get("/getLeaderBoard",function(req,res)
     var player_list = [];
     var leaderboard_items = []; // list of {username:<username>, megapoints:<megapoints>}
 
-    _.each(players,function(player)
+    /*_.each(players,function(player)
     {
       player_list.push(player.username);
 
@@ -33,7 +33,21 @@ router.get("/getLeaderBoard",function(req,res)
           megapoints: points
         });
       });
-    });
+    });*/
+
+    for (var i = 0; i < players.length; i++)
+    {
+      player_list.push(player.username);
+
+      SidAPI.getMega(player.username,function(points)
+      {
+        console.log(player.username+ " :: "+points);
+        leaderboard_items.push({
+          username: player.username,
+          megapoints: points
+        });
+      });
+    }
 
     leaderboard_items = _.sortBy(leaderboard_items,"megapoints").reverse();
     console.log(":: leaderboard start");console.log(leaderboard_items);console.log(":: leaderboard end");
