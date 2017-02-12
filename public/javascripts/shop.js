@@ -94,6 +94,7 @@ shopState.prototype = {
 		});
         $.get('shop/getUnlocked', function(data, status){
             unlockdata = data;
+            console.log('Initial check...');
             initialcheck();
         });
         
