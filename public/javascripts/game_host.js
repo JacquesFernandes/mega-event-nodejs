@@ -77,9 +77,9 @@ socket.on('getclientinfo', function(data){
                 player_heavy_damage = response.host.dmg.heavy;
                 player_light_damage = response.host.dmg.light;
 
-                fire_rate_light = response.host.attack_speed.light;
-                fire_rate_heavy = response.host.attack_speed.heavy;
-                fire_rate_sniper = response.host.attack_speed.sniper;
+                fire_rate_light = response.host.attack_speed.light * 1000;
+                fire_rate_heavy = response.host.attack_speed.heavy * 1000;
+                fire_rate_sniper = response.host.attack_speed.sniper * 1000;
                 
                 enemy_username = response.client.username;
                 enemy_movement_speed = response.client.movement_speed;
