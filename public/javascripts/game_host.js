@@ -441,7 +441,7 @@ function init(){
             loading = game.add.sprite(700, 300, 'loading');
             loading.anchor.setTo(0.5, 0.5);
 
-            loading_text = game.add.text(700, 100, "Click me", 
+            loading_text = game.add.text(700, 100, "Please Wait for the other player to connect!", 
                 { font: "32px Arial", fill: "#ffff00", align: "center" 
             });
             loading_text.anchor.setTo(0.5, 0.5);
