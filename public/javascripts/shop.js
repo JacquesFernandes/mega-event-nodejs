@@ -104,7 +104,7 @@ shopState.prototype = {
 			console.log('Home');
 			window.history.back();
 		}, this, 0);
-		homebutton.scale.setTo(0.4);
+		homebutton.scale.setTo(0.1);
         
         /*Buttons of Tiers*/
         //Tier 0
