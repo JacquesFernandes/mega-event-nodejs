@@ -215,13 +215,31 @@ module.exports = function(io){
         for(var i = 0 ; i < sessions.length ; i++){
             if(sessions[i].host === username){
                 sessions[i].host_id = socket_id;
+                if(sessions[i].client_id){
+                   if(io.sockets.connected[sessions[i].client_id]){
+                        io.sockets.connected[sessions[i].client_id].emit('startGame');
+                    }
+                    if(io.sockets.connected[socket_id]){
+                        io.sockets.connected[socket_id].emit('startGame');
+                    }
+                }
                 console.log(sessions);
             }
             else if(sessions[i].client === username){
                 sessions[i].client_id = socket_id;
+                if(sessions[i].host_id){
+                   if(io.sockets.connected[sessions[i].client_id]){
+                        io.sockets.connected[sessions[i].client_id].emit('startGame');
+                    }
+                    if(io.sockets.connected[socket_id]){
+                        io.sockets.connected[socket_id].emit('startGame');
+                    }
+                }
                 console.log(sessions);
             }
         }
+
+
         res.send({'msg':'success'});
     });
 

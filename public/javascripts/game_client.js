@@ -40,10 +40,6 @@ $.ajax({
     }   
 });
 
-socket.on('success', function(){
-    isIdUpdated = true;
-});
-
 $.ajax({
     url: '/game/getSessionDetails',
     type: 'GET',
@@ -68,7 +64,7 @@ $.ajax({
 
 });
 
-var startGame = true;
+var startGame = false;
 
 function init(){
 

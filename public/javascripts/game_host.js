@@ -1,7 +1,5 @@
 var socket = io();
 
-alert('please wait for client to connect');
-
 // getUsername
 socket.on('connect', function() {
      $.ajax({
@@ -53,9 +51,7 @@ $.ajax({
     }   
 });
 
-socket.on('success', function(){
-    isIdUpdated = true;
-});
+var loadData = false;
 
 socket.on('getclientinfo', function(data){
 
@@ -90,8 +86,7 @@ socket.on('getclientinfo', function(data){
                 enemy_heavy_damage = response.client.dmg.heavy;
                 enemy_light_damage = response.client.dmg.light;
 
-                init();
-
+                loadData = true;
             }
 
         });
@@ -100,13 +95,15 @@ socket.on('getclientinfo', function(data){
 
 });
 
-var startGame = true;
+init();
+var startGame = false;
 
 function init(){
 
     var game = new Phaser.Game(1280, 720, Phaser.CANVAS);
 
     var loading;
+    var loading_text;
 
     var tilesprite;
     var cursors;
@@ -444,6 +441,11 @@ function init(){
             loading = game.add.sprite(700, 300, 'loading');
             loading.anchor.setTo(0.5, 0.5);
 
+            loading_text = game.add.text(700, 100, "Click me", 
+                { font: "32px Arial", fill: "#ffff00", align: "center" 
+            });
+            loading_text.anchor.setTo(0.5, 0.5);
+
             game.load.image('space', '/assets/sprites/space.png');
             game.load.image('light_bullet', '/assets/sprites/light.png');
             game.load.image('heavy_bullet', '/assets/sprites/heavy.png');
@@ -470,7 +472,7 @@ function init(){
         },
         update: function () {
 
-            if(startGame){
+            if(startGame && loadData){
                 game.state.start('gameState');
             }
 
@@ -639,6 +641,8 @@ function init(){
 
             background_music.onStop.add(repeatBackground, this);
             background_music.play();
+
+            socket.io('hostloadcomplete', {'username': player_username});
 
         },
         update: function (){
@@ -1082,6 +1086,5 @@ function init(){
 
     socket.on('startGame', function(){
         startGame = true;
-        console.log('hello');
     });
 }
