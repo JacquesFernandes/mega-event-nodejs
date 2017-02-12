@@ -92,7 +92,7 @@ gameState.prototype = {
         /*pltext.anchor.set(0.5);*/
         
         $.get("/users/getLeaderBoard", function(data,status){
-			console.log('Leader data : ' + data[0]);
+			console.log('Leader data : ' + data);
 			
 			console.log('Leader stat : '+status);
 		});
