@@ -100,7 +100,7 @@ shopState.prototype = {
         });
         
         /*Home button*/
-        homebutton = game.add.button(game.world.centerX * 1.5 + 130, 35, 'homebutton', function(){
+        homebutton = game.add.button(230, 35, 'homebutton', function(){
 			console.log('Home');
 			window.history.back();
 		}, this, 0);
@@ -363,7 +363,7 @@ function checkunlock(bObject){
     }
 }
 function displayp(upoints){
-	upoints = game.add.text(game.world.centerX , 35, 'Points : ' + upoints);
+	upoints = game.add.text(game.world.centerX - 30, 35, 'Points : ' + upoints);
 	upoints.font = 'Courier New';
 	upoints.fill = '#FFFFFF';
 }
