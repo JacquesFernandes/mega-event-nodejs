@@ -1,5 +1,7 @@
 var socket = io();
 
+alert('please wait for client to connect');
+
 // getUsername
 socket.on('connect', function() {
     //
@@ -7,6 +9,9 @@ socket.on('connect', function() {
 
 var player_username;
 var enemy_username;
+
+var player_movement_speed;
+var enemy_movement_speed;
 
 var player_sniper_damage;
 var player_light_damage;
@@ -20,25 +25,68 @@ var fire_rate_light = 500;
 var fire_rate_heavy = 1500;
 var fire_rate_sniper = 3000; 
 
-var player_hp = 100;
-var enemy_hp = 100;
+var player_hp;
+var enemy_hp;
 
 var player_current_hp = 100;
 var enemy_current_hp = 100;
 
 $.ajax({
-    url: '/game/new_game',
-    type: 'POST',
+    url: '/game/getusername',
+    type: 'GET',
     dataType: 'json',
     success: function (response){
 
-        player_username = response.host_name;
-        enemy_username = response.client_name;
+        player_username = response.username;
+        socket.emit('socketidupdate', { 'username': player_username });
 
-        init();
+    }   
+});
+
+socket.on('getclientinfo', function(data){
+
+    console.log(data.username+' '+player_username);
+
+    if(data.username === player_username){
+        $.ajax({
+            url: '/game/getSessionDetails',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response){
+
+                player_username = response.host.username;
+                player_movement_speed = response.host.movement_speed;
+                player_hp = response.host.hp;
+                player_current_hp = response.host.hp;
+
+                player_sniper_damage = response.host.dmg.sniper;
+                player_heavy_damage = response.host.dmg.heavy;
+                player_light_damage = response.host.dmg.light;
+
+                fire_rate_light = response.host.attack_speed.light;
+                fire_rate_heavy = response.host.attack_speed.heavy;
+                fire_rate_sniper = response.host.attack_speed.sniper;
+                
+                enemy_username = response.client.username;
+                enemy_movement_speed = response.client.movement_speed;
+                enemy_hp = response.client.hp;
+                enemy_current_hp = response.client.hp;
+
+                enemy_sniper_damage = response.client.dmg.sniper;
+                enemy_heavy_damage = response.client.dmg.heavy;
+                enemy_light_damage = response.client.dmg.light;
+
+                init();
+
+            }
+
+        });
 
     }
+
 });
+
+var startGame = true;
 
 function init(){
 
@@ -108,8 +156,6 @@ function init(){
     var sniper_shoot_music;
     var heavy_shoot_music;
     var light_shoot_music;
-
-    var startGame = true;
 
     PLAYER_SHIP = function (game, username, x, y) {
         
@@ -402,10 +448,10 @@ function init(){
 
             game.load.spritesheet('tower', '/assets/spritesheet/tower.png', 200, 200, 4);
 
-            game.load.audio('background_music', 'assets/audio/background.mp3');
-            game.load.audio('sniper_shoot_music', 'assets/audio/sniper.mp3');
-            game.load.audio('heavy_shoot_music', 'assets/audio/heavy.mp3');
-            game.load.audio('light_shoot_music', 'assets/audio/light.mp3');
+            game.load.audio('background_music', '/assets/audio/background.mp3');
+            game.load.audio('sniper_shoot_music', '/assets/audio/sniper.mp3');
+            game.load.audio('heavy_shoot_music', '/assets/audio/heavy.mp3');
+            game.load.audio('light_shoot_music', '/assets/audio/light.mp3');
             
         },
         update: function () {
@@ -438,22 +484,22 @@ function init(){
 
             tilesprite = game.add.tileSprite(0, 0, 1920, 1920, 'space');
             
-            towersprite = game.add.sprite(300, 400, 'tower');
-            towersprite.anchor.setTo(0.5, 0.5);
-            towersprite.scale.setTo(2.5, 2.5);
+            // towersprite = game.add.sprite(300, 400, 'tower');
+            // towersprite.anchor.setTo(0.5, 0.5);
+            // towersprite.scale.setTo(2.5, 2.5);
             
-            game.physics.enable(towersprite, Phaser.Physics.ARCADE);
-            towersprite.body.immovable = true;
-            towersprite.body.moves = false;
+            // game.physics.enable(towersprite, Phaser.Physics.ARCADE);
+            // towersprite.body.immovable = true;
+            // towersprite.body.moves = false;
 
-            towersprite_enemy = game.add.sprite(1500, 1400, 'tower');
-            towersprite_enemy.anchor.setTo(0.5, 0.5);
-            towersprite_enemy.scale.setTo(2.5, 2.5);
+            // towersprite_enemy = game.add.sprite(1500, 1400, 'tower');
+            // towersprite_enemy.anchor.setTo(0.5, 0.5);
+            // towersprite_enemy.scale.setTo(2.5, 2.5);
             
-            game.physics.enable(towersprite_enemy, Phaser.Physics.ARCADE);
-            towersprite_enemy.body.immovable = true;
-            towersprite_enemy.body.moves = false;
-            towersprite_enemy.frame = 2;
+            // game.physics.enable(towersprite_enemy, Phaser.Physics.ARCADE);
+            // towersprite_enemy.body.immovable = true;
+            // towersprite_enemy.body.moves = false;
+            // towersprite_enemy.frame = 2;
 
             player = new PLAYER_SHIP(game, player_username, player_spawn_x, player_spawn_y);
             enemy = new ENEMY_SHIP(game, enemy_username, enemy_spawn_x, enemy_spawn_y);
@@ -600,14 +646,14 @@ function init(){
 
             game.physics.arcade.overlap( player_light_bullets_group, enemy.ship, function(tank, bullet){
                 bullet.kill();
-                if(enemy_current_hp - 5 <= 0){
+                if(enemy_current_hp - player_light_damage <= 0){
                     enemy_current_hp = 0;
-                    enemy.destroy();
+                    gameOver(enemy_username, player_username);
                     updateEnemyHealthbar();
                     socket.emit('newClientHp', { 'hp': enemy_current_hp });
                 }
                 else{
-                    enemy_current_hp -= 5;
+                    enemy_current_hp -= player_light_damage;
                     updateEnemyHealthbar();
                     socket.emit('newClientHp', { 'hp': enemy_current_hp });
                 }
@@ -615,14 +661,14 @@ function init(){
 
             game.physics.arcade.overlap( player_heavy_bullets_group, enemy.ship, function(tank, bullet){
                 bullet.kill();
-                if(enemy_current_hp - 10 <= 0){
+                if(enemy_current_hp - player_heavy_damage <= 0){
                     enemy_current_hp = 0;
-                    enemy.destroy();
+                    gameOver(enemy_username, player_username);
                     updateEnemyHealthbar();
                     socket.emit('newClientHp', { 'hp': enemy_current_hp });
                 }
                 else{
-                    enemy_current_hp -= 10;
+                    enemy_current_hp -= player_heavy_damage;
                     updateEnemyHealthbar();
                     socket.emit('newClientHp', { 'hp': enemy_current_hp });
                 }
@@ -630,14 +676,14 @@ function init(){
 
             game.physics.arcade.overlap( player_sniper_bullets_group, enemy.ship, function(tank, bullet){
                 bullet.kill();
-                if(enemy_current_hp - 50 <= 0){
+                if(enemy_current_hp - player_sniper_damage <= 0){
                     enemy_current_hp = 0;
-                    enemy.destroy();
+                    gameOver(enemy_username, player_username);
                     updateEnemyHealthbar();
                     socket.emit('newClientHp', { 'hp': enemy_current_hp });
                 }
                 else{
-                    enemy_current_hp -= 50;
+                    enemy_current_hp -= player_sniper_damage;
                     updateEnemyHealthbar();
                     socket.emit('newClientHp', { 'hp': enemy_current_hp });
                 }
@@ -645,14 +691,14 @@ function init(){
 
             game.physics.arcade.overlap( enemy_light_bullets_group, player.ship, function(tank, bullet){
                 bullet.kill();
-                if(player_current_hp - 5 <= 0){
+                if(player_current_hp - enemy_light_damage <= 0){
                     player_current_hp = 0;
-                    player.destroy();
+                    gameOver(player_username, enemy_username);
                     updatePlayerHealthbar();
                     socket.emit('newHostHp', { 'hp': player_current_hp });
                 }
                 else{
-                    player_current_hp -= 5;
+                    player_current_hp -= enemy_light_damage;
                     updatePlayerHealthbar();
                     socket.emit('newHostHp', { 'hp': player_current_hp });
                 }
@@ -660,14 +706,14 @@ function init(){
 
             game.physics.arcade.overlap( enemy_heavy_bullets_group, player.ship, function(tank, bullet){
                 bullet.kill();
-                if(player_current_hp - 10 <= 0){
+                if(player_current_hp - enemy_heavy_damage <= 0){
                     player_current_hp = 0;
-                    player.destroy();
+                    gameOver(player_username, enemy_username);
                     updatePlayerHealthbar();
                     socket.emit('newHostHp', { 'hp': player_current_hp });
                 }
                 else{
-                    player_current_hp -= 10;
+                    player_current_hp -= enemy_heavy_damage;
                     updatePlayerHealthbar();
                     socket.emit('newHostHp', { 'hp': player_current_hp });
                 }
@@ -675,9 +721,9 @@ function init(){
 
             game.physics.arcade.overlap( enemy_sniper_bullets_group, player.ship, function(tank, bullet){
                 bullet.kill();
-                if(player_current_hp - 50 <= 0){
+                if(player_current_hp - enemy_sniper_damage <= 0){
                     player_current_hp = 0;
-                    player.destroy();
+                    gameOver(player_username, enemy_username);
                     updatePlayerHealthbar();
                     socket.emit('newHostHp', { 'hp': player_current_hp });
                 }
@@ -688,29 +734,29 @@ function init(){
                 }
             });
 
-            game.physics.arcade.overlap( player_light_bullets_group, towersprite, function(tower, bullet){
-                bullet.kill();
-            });
+            // game.physics.arcade.overlap( player_light_bullets_group, towersprite, function(tower, bullet){
+            //     bullet.kill();
+            // });
 
-            game.physics.arcade.overlap( player_heavy_bullets_group, towersprite, function(tower, bullet){
-                bullet.kill();
-            });
+            // game.physics.arcade.overlap( player_heavy_bullets_group, towersprite, function(tower, bullet){
+            //     bullet.kill();
+            // });
 
-            game.physics.arcade.overlap( player_sniper_bullets_group, towersprite, function(tower, bullet){
-                bullet.kill();
-            });
+            // game.physics.arcade.overlap( player_sniper_bullets_group, towersprite, function(tower, bullet){
+            //     bullet.kill();
+            // });
 
-            game.physics.arcade.overlap( enemy_light_bullets_group, towersprite, function(tower, bullet){
-                bullet.kill();
-            });
+            // game.physics.arcade.overlap( enemy_light_bullets_group, towersprite, function(tower, bullet){
+            //     bullet.kill();
+            // });
 
-            game.physics.arcade.overlap( enemy_heavy_bullets_group, towersprite, function(tower, bullet){
-                bullet.kill();
-            });
+            // game.physics.arcade.overlap( enemy_heavy_bullets_group, towersprite, function(tower, bullet){
+            //     bullet.kill();
+            // });
 
-            game.physics.arcade.overlap( enemy_sniper_bullets_group, towersprite, function(tower, bullet){
-                bullet.kill();
-            });
+            // game.physics.arcade.overlap( enemy_sniper_bullets_group, towersprite, function(tower, bullet){
+            //     bullet.kill();
+            // });
 
             if(game.time.now < next_fire_light){
                 isLightReady = false;
@@ -937,16 +983,24 @@ function init(){
         background_music.play();
     }
 
+    function gameOver(loser, winner){
+        
+        if(loser === player_username){
+            player.destroy();
+        }
+        else if(loser === enemy_username){
+            enemy.destroy();
+        }
+
+        socket.emit('gameoverhost', { winner: winner, loser: loser });
+    }
+
     socket.on('newClientInput', function (data) {
 
         input_info.input_up = data.input_up;
         input_info.input_left = data.input_left;
         input_info.input_right = data.input_right;
 
-    });
-
-    socket.on('startGame', function(){
-        startGame = true;
     });
 
     socket.on('spawnClientBullet', function (data){
@@ -996,10 +1050,24 @@ function init(){
         }
     });
 
+    socket.on('gameover', function(){
+        alert('Game Over!');
+        window.location = '/';
+    });
+
+    socket.on('playerdisconnection', function(){
+        alert('The other player is disconnected. You are winner!');
+        window.location = '/';
+    });
+
     game.state.add('bootState', bootState);
     game.state.add('preloadState', preloadState);
     game.state.add('gameState', gameState);
 
     game.state.start('bootState');
 
+    socket.on('startGame', function(){
+        startGame = true;
+        console.log('hello');
+    });
 }

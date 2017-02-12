@@ -56,134 +56,144 @@ module.exports = function(io){
         }
     });
 
-    router.post('/getSessionDetails', function(req, res, next){
+    router.get('/getSessionDetails', function(req, res, next){
 
         var host_details;
         var client_details;
 
-        var username = req.body.username;
+        if(req.sess.username){
+            var username = req.sess.username;
 
-        for(var i = 0 ; i < sessions.length ; i++){
-            if(sessions[i].host === username){
+            for(var i = 0 ; i < sessions.length ; i++){
+                if(sessions[i].host === username){
 
-                var client_name = sessions[i].client;
+                    var client_name = sessions[i].client;
 
-                playerModel.findOne({ username: username }, function(err, player_h){
-        
-                    var ret_h = {};
-                    if (player_h !== undefined && player_h !== null){
+                    playerModel.findOne({ username: username }, function(err, player_h){
+            
+                        var ret_h = {};
+                        if (player_h !== undefined && player_h !== null){
 
-                        ret_h.username = player_h.username;
-                        ret_h.movement_speed = player_h.movement_speed;
-                        ret_h.hp = player_h.hp;
+                            ret_h.username = player_h.username;
+                            ret_h.movement_speed = player_h.movement_speed;
+                            ret_h.hp = player_h.hp;
 
-                        var weapons_h = player_h.weapons;
+                            var weapons_h = player_h.weapons;
 
-                        ret_h.dmg = {
-                            light: weapons_h.light.dmg,
-                            heavy: weapons_h.heavy.dmg,
-                            sniper: weapons_h.sniper.dmg
-                        };
-                        ret_h.attack_speed = {
-                            light: weapons_h.light.rate,
-                            heavy: weapons_h.heavy.rate,
-                            sniper: weapons_h.sniper.rate
+                            ret_h.dmg = {
+                                light: weapons_h.light.dmg,
+                                heavy: weapons_h.heavy.dmg,
+                                sniper: weapons_h.sniper.dmg
+                            };
+                            ret_h.attack_speed = {
+                                light: weapons_h.light.rate,
+                                heavy: weapons_h.heavy.rate,
+                                sniper: weapons_h.sniper.rate
+                            }
+
+                            host_details = ret_h;
+
+                            playerModel.findOne({ username: client_name }, function(err, player_c){
+            
+                                var ret_c = {};
+                                if (player_c !== undefined && player_c !== null){
+
+                                    ret_c.username = player_c.username;
+                                    ret_c.movement_speed = player_c.movement_speed;
+                                    ret_c.hp = player_c.hp;
+
+                                    var weapons_c = player_c.weapons;
+
+                                    ret_c.dmg = {
+                                        light: weapons_c.light.dmg,
+                                        heavy: weapons_c.heavy.dmg,
+                                        sniper: weapons_c.sniper.dmg
+                                    };
+                                    ret_c.attack_speed = {
+                                        light: weapons_c.light.rate,
+                                        heavy: weapons_c.heavy.rate,
+                                        sniper: weapons_c.sniper.rate
+                                    }
+                                    
+                                    client_details = ret_c;
+
+                                    var host_socket_id = sessions[i].host_id;
+                                    var client_socket_id = sessions[i].client_id;
+
+                                    res.send({ 'host': host_details, 'client': client_details });
+
+                                    console.log(sessions+'  line 125');
+                                    
+                                    return;
+                                }
+                            });
                         }
 
-                        host_details = ret_h;
+                    });
+                    break;
+                }
+                else if(sessions[i].client === username){
 
-                         playerModel.findOne({ username: client_name }, function(err, player_c){
-        
-                            var ret_c = {};
-                            if (player_c !== undefined && player_c !== null){
+                    var host_name = sessions[i].host;
 
-                                ret_c.username = player_c.username;
-                                ret_c.movement_speed = player_c.movement_speed;
-                                ret_c.hp = player_c.hp;
+                    playerModel.findOne({ username: username }, function(err, player_c){
 
-                                var weapons_c = player_c.weapons;
+                        var ret_c = {};
 
-                                ret_c.dmg = {
-                                    light: weapons_c.light.dmg,
-                                    heavy: weapons_c.heavy.dmg,
-                                    sniper: weapons_c.sniper.dmg
-                                };
-                                ret_c.attack_speed = {
-                                    light: weapons_c.light.rate,
-                                    heavy: weapons_c.heavy.rate,
-                                    sniper: weapons_c.sniper.rate
-                                }
-                                
-                                client_details = ret_c;
+                        if (player_c !== undefined && player_c !== null){
 
-                                res.send({ 'host': host_details, 'client': client_details });
-                                return;
+                            ret_c.username = player_c.username;
+                            ret_c.movement_speed = player_c.movement_speed;
+                            ret_c.hp = player_c.hp;
+
+                            var weapons_c = player_c.weapons;
+
+                            ret_c.dmg = {
+                                light: weapons_c.light.dmg,
+                                heavy: weapons_c.heavy.dmg,
+                                sniper: weapons_c.sniper.dmg
+                            };
+                            ret_c.attack_speed = {
+                                light: weapons_c.light.rate,
+                                heavy: weapons_c.heavy.rate,
+                                sniper: weapons_c.sniper.rate
                             }
-                        });
-                    }
+                            
+                            client_details = ret_c;
 
-                });
-                break;
-            }
-            else if(sessions[i].client === username){
+                            playerModel.findOne({ username: host_name }, function(err, player_h){
+            
+                                var ret_h = {};
+                                if (player_h !== undefined && player_h !== null){
 
-                var host_name = sessions[i].host;
+                                    ret_h.username = player_h.username;
+                                    ret_h.movement_speed = player_h.movement_speed;
+                                    ret_h.hp = player_h.hp;
 
-                playerModel.findOne({ username: username }, function(err, player_c){
+                                    var weapons_h = player_h.weapons;
 
-                    var ret_c = {};
+                                    ret_h.dmg = {
+                                        light: weapons_h.light.dmg,
+                                        heavy: weapons_h.heavy.dmg,
+                                        sniper: weapons_h.sniper.dmg
+                                    };
+                                    ret_h.attack_speed = {
+                                        light: weapons_h.light.rate,
+                                        heavy: weapons_h.heavy.rate,
+                                        sniper: weapons_h.sniper.rate
+                                    }
 
-                    if (player_c !== undefined && player_c !== null){
-
-                        ret_c.username = player_c.username;
-                        ret_c.movement_speed = player_c.movement_speed;
-                        ret_c.hp = player_c.hp;
-
-                        var weapons_c = player_c.weapons;
-
-                        ret_c.dmg = {
-                            light: weapons_c.light.dmg,
-                            heavy: weapons_c.heavy.dmg,
-                            sniper: weapons_c.sniper.dmg
-                        };
-                        ret_c.attack_speed = {
-                            light: weapons_c.light.rate,
-                            heavy: weapons_c.heavy.rate,
-                            sniper: weapons_c.sniper.rate
+                                    host_details = ret_h;
+                                    io.sockets.emit('getclientinfo', {'username': host_name});
+            
+                                    res.send({ 'host': host_details, 'client': client_details });
+                                    return;
+                                }
+                            });
                         }
-                        
-                        client_details = ret_c;
-
-                        playerModel.findOne({ username: host_name }, function(err, player_h){
-        
-                            var ret_h = {};
-                            if (player_h !== undefined && player_h !== null){
-
-                                ret_h.username = player_h.username;
-                                ret_h.movement_speed = player_h.movement_speed;
-                                ret_h.hp = player_h.hp;
-
-                                var weapons_h = player_h.weapons;
-
-                                ret_h.dmg = {
-                                    light: weapons_h.light.dmg,
-                                    heavy: weapons_h.heavy.dmg,
-                                    sniper: weapons_h.sniper.dmg
-                                };
-                                ret_h.attack_speed = {
-                                    light: weapons_h.light.rate,
-                                    heavy: weapons_h.heavy.rate,
-                                    sniper: weapons_h.sniper.rate
-                                }
-
-                                host_details = ret_h;
-                                res.send({ 'host': host_details, 'client': client_details });
-                                return;
-                            }
-                        });
-                    }
-                });
-                break;
+                    });
+                    break;
+                }
             }
         }
 
@@ -201,62 +211,200 @@ module.exports = function(io){
         
         console.log(socket.id+' connected!');
 
+        socket.on('socketidupdate', function(data){
+
+            var username = data.username;
+            var socket_id = socket.id;
+
+            for(var i = 0 ; i < sessions.length ; i++){
+                if(sessions[i].host === username){
+                    sessions[i].host_id = socket_id;
+                }
+                else if(sessions[i].client === username){
+                    sessions[i].client_id = socket_id;
+                }
+            }
+
+        });
+
         socket.on('playerPositionData', function(data){
 
-            // find id then send
-            if(io.sockets.connected[client_socket_id]){
-                io.sockets.emit('newPlayerPositionData', data);
+            for(var i = 0 ; i < sessions.length ; i++){
+                if(sessions[i].host_id === socket.id){
+                    var client_socket_id = sessions[i].client_id;
+
+                    if(io.sockets.connected[client_socket_id]){
+                        io.sockets.emit('newPlayerPositionData', data);
+                    }
+
+                }
             }
 
         });
 
         socket.on('clientInput', function(data){
             
-            if(io.sockets.connected[host_socket_id]){
-                io.sockets.connected[host_socket_id].emit('newClientInput', data);
+            for(var i = 0 ; i < sessions.length ; i++){
+                if(sessions[i].client_id === socket.id){
+                    var host_socket_id = sessions[i].host_id;
+
+                    if(io.sockets.connected[host_socket_id]){
+                        io.sockets.connected[host_socket_id].emit('newClientInput', data);
+                    }
+
+                }
             }
+                    
 
         });
 
         socket.on('newClientBullet', function(data){
             
-            if(io.sockets.connected[host_socket_id]){
-                io.sockets.connected[host_socket_id].emit('spawnClientBullet', data);
+            for(var i = 0 ; i < sessions.length ; i++){
+                if(sessions[i].client_id === socket.id){
+                    var host_socket_id = sessions[i].host_id;
+
+                    if(io.sockets.connected[host_socket_id]){
+                        io.sockets.connected[host_socket_id].emit('spawnClientBullet', data);
+                    }
+                    
+                }
             }
 
         });
 
         socket.on('newHostBullet', function(data){
             
-            if(io.sockets.connected[client_socket_id]){
-                io.sockets.connected[client_socket_id].emit('spawnHostBullet', data);
+            for(var i = 0 ; i < sessions.length ; i++){
+                if(sessions[i].host_id === socket.id){
+                    var client_socket_id = sessions[i].client_id;
+
+                    if(io.sockets.connected[client_socket_id]){
+                        io.sockets.connected[client_socket_id].emit('spawnHostBullet', data);
+                    }
+
+                }
             }
 
         });
 
         socket.on('newClientHp', function(data){
             
-            if(io.sockets.connected[client_socket_id]){
-                io.sockets.connected[client_socket_id].emit('updateClientHp', data);
+            for(var i = 0 ; i < sessions.length ; i++){
+                if(sessions[i].host_id === socket.id){
+                    var client_socket_id = sessions[i].client_id;
+
+                    if(io.sockets.connected[client_socket_id]){
+                        io.sockets.connected[client_socket_id].emit('updateClientHp', data);
+                    }
+
+                }
             }
 
         });
 
         socket.on('newHostHp', function(data){
             
-            if(io.sockets.connected[client_socket_id]){
-                io.sockets.connected[client_socket_id].emit('updateHostHp', data);
+            for(var i = 0 ; i < sessions.length ; i++){
+                if(sessions[i].host_id === socket.id){
+                    var client_socket_id = sessions[i].client_id;
+
+                    if(io.sockets.connected[client_socket_id]){
+                        io.sockets.connected[client_socket_id].emit('updateHostHp', data);
+                    }
+
+                }
             }
 
         });
 
         socket.on('disconnect', function () {
             
-            io.sockets.emit('playerDisconnection');
-            isHostConnected = false;
-            isClientConnected = false;
+            var disconnectedplayerid = socket.id;
+
+            for(var i = 0 ; i < sessions.length ; i++){
+
+                if(sessions[i].host_id === disconnectedplayerid){
+
+                    var client_socket_id = sessions[i].client_id;
+
+                    if(io.sockets.connected[client_socket_id]){
+                        io.sockets.connected[client_socket_id].emit('playerdisconnection');
+                    }
+
+                    var winner = sessions[i].client;
+                    var loser = sessions[i].host;
+                    // mega point calculations here
+                    
+                    sessions = _.without(sessions, _.findWhere(sessions, {'host_id': disconnectedplayerid}));
+                    break;
+
+                }
+                else if(sessions[i].client_id === disconnectedplayerid){
+
+                    var host_socket_id = sessions[i].host_id;
+
+                    if(io.sockets.connected[host_socket_id]){
+                        io.sockets.connected[host_socket_id].emit('playerdisconnection');
+                    }
+
+                    var winner = sessions[i].host;
+                    var loser = sessions[i].client;
+                    // mega point calculations here
+
+                    sessions = _.without(sessions, _.findWhere(sessions, {'client_id': disconnectedplayerid}));
+                    break;
+                }
             
+            }
+
         });
+
+        socket.on('gameoverhost', function(data){
+
+            // these are usernames
+            var winner = data.winner;
+            var loser = data.loser;
+
+            // mega point calculations here
+
+            for(var i = 0 ; i < sessions.length ; i++){
+                if(sessions[i].host === winner){
+
+                    var host_socket_id = sessions[i].host_id;
+                    var client_socket_id = sessions[i].client_id;
+
+                    if(io.sockets.connected[host_socket_id]){
+                        io.sockets.connected[host_socket_id].emit('gameover');
+                    }
+
+                    if(io.sockets.connected[client_socket_id]){
+                        io.sockets.connected[client_socket_id].emit('gameover');
+                    }
+
+                    sessions = _.without(sessions, _.findWhere(sessions, {'host': winner}));
+                    break;
+
+                }
+                else if(sessions[i].client === winner){
+
+                    var host_socket_id = sessions[i].host_id;
+                    var client_socket_id = sessions[i].client_id;
+
+                    if(io.sockets.connected[host_socket_id]){
+                        io.sockets.connected[host_socket_id].emit('gameover');
+                    }
+
+                    if(io.sockets.connected[client_socket_id]){
+                        io.sockets.connected[client_socket_id].emit('gameover');
+                    }
+
+                    sessions = _.without(sessions, _.findWhere(sessions, {'host': loser}));
+                    break;
+                }
+            }
+            
+        })
 
     });
 
