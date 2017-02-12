@@ -37,7 +37,7 @@ router.get("/getLeaderBoard",function(req,res)
 
     for (var i = 0; i < players.length; i++)
     {
-      player = players[i];
+      var player = players[i];
       player_list.push(player.username);
       SidAPI.getMega(player.username,function(points)
       {
